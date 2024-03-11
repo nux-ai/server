@@ -5,65 +5,32 @@ from utilities.methods import BadRequestError
 from utilities.helpers import generate_api_key
 from utilities.encryption import Secret
 
-from cloud_services.notifications.slack import Slack
-
-from config import clerk_credentials
 from db.service import sync_db, mongo_client
-import requests
 from .model import (
     OrganizationBase,
     User,
     UsagePricing,
-    DataPermissions,
-    ModelPermissions,
-    CodePermissions,
     Permissions,
     ApiKey,
     TrustedOrgResponse,
 )
 
 
-class OnboardService:
-    def __init__(self):
-        pass
-
-    # def __init__(self, background_tasks: BackgroundTasks):
-    #     self.background_tasks = background_tasks
-
-    def notify(self, msg):
-        Slack.post(msg)
-
-    def lookup_user(self, email):
-        pass
-
-    def scrape_website(self, url):
-        pass
-
-    def create_workbook(self, org_id, website_id):
-        pass
-
-
 class OrganizationSyncService:
     def __init__(self):
-        # Initialize a collection object for 'organizations'.
         self.sync_client = sync_db["organizations"]
 
     def start_session(self):
         return mongo_client.start_session()
 
-    def create_organization(self, org_metadata={}, users=[]):
-        slug = org_metadata["slug"]
+    def create_organization(self, metadata={}, users=[]):
+        slug = metadata.get("slug", None)
         already_exists = self.sync_client.find_one({"metadata.slug": slug})
         if slug is not None and already_exists is not None:
             return already_exists
 
         # Create permissions and usage objects
-        permissions = Permissions(
-            code=CodePermissions(),
-            models=ModelPermissions(),
-            data=DataPermissions(),
-            rate_limit="10/minute",
-        )
+        permissions = Permissions(rate_limit="10/minute")
         usage = UsagePricing()
         index = "ix-" + generate_api_key()
         apiKey = ApiKey(name="default", indexes=[index])
@@ -71,7 +38,7 @@ class OrganizationSyncService:
         # Create organization with the given metadata, user, and index
         try:
             org = OrganizationBase(
-                metadata=org_metadata,
+                metadata=metadata,
                 api_keys=[apiKey],
                 indexes=[index],
                 users=users,
@@ -86,50 +53,9 @@ class OrganizationSyncService:
 
         return org
 
-    def add_new_membership(self, clerk_org_id, email, user_metadata={}, session=None):
-        org = self.sync_client.find_one({"metadata.id": clerk_org_id})
-        if not org:
-            raise BadRequestError("Organization not found")
-
-        previous_user_exists = self.sync_client.find_one(
-            {"org_id": org["org_id"], "users.email": email}
-        )
-        if previous_user_exists:
-            return org
-            # raise BadRequestError("User already exists in organization")
-
-        user = User(email=email, metadata=user_metadata)
-        self.sync_client.update_one(
-            {"org_id": org["org_id"]},
-            {"$addToSet": {"users": user.model_dump(by_alias=True)}},
-            session=session,
-        )
-
-        # background tasks to make onboarding better
-        onboarding = OnboardService()
-        onboarding.notify(f"🚀 New User!!! {email} created an account")
-        # website_url = onboarding.lookup_user(email)
-        # website_id = onboarding.scrape_website(website_url)
-        # onboarding.create_workbook(org["org_id"], website_id)
-
-        return org
-
     def delete_organization(self, org_id):
         # Find the organization by its ID
         org = self.sync_client.find_one({"org_id": org_id})
-
-        # Raise an error if the organization is not found
-        if not org:
-            raise BadRequestError("Organization not found", status_code=400)
-
-        # Delete the organization from the database
-        self.sync_client.delete_one({"_id": org["_id"]})
-
-        return True
-
-    def delete_organization_by_clerk_id(self, clerk_org_id):
-        # Find the organization by its ID
-        org = self.sync_client.find_one({"metadata.id": clerk_org_id})
 
         # Raise an error if the organization is not found
         if not org:
@@ -160,10 +86,6 @@ class OrganizationSyncService:
         if obj is None:
             raise BadRequestError("API key does not exist")
 
-        # ensure org has credits
-        if obj["usage"]["credits"] <= 0:
-            raise BadRequestError("No credits remaining")
-
         return obj
 
     def get_index_ids(self, api_key, index_id=None):
@@ -178,23 +100,6 @@ class OrganizationSyncService:
 
         # temp until we can handle multiple index_ids
         return obj["indexes"][0], obj
-
-    def get_by_email(self, email):
-        # Retrieve an organization object by a user's email.
-        response = list(self.sync_client.find({"users.email": email}))
-
-        # Return None if no organization is found.
-        if not response:
-            return None
-
-        return OrganizationBase(**response[0])
-
-    def reduce_credit_by_one(self, org_id):
-        # Decrement the credit count of an organization by one.
-        self.sync_client.update_one(
-            {"org_id": org_id, "credits_remaining": {"$gte": 0}},
-            {"$inc": {"credits_remaining": -1}},
-        )
 
     def get_by_index_id(self, index_id):
         # Retrieve an organization object by its index_id.
@@ -239,7 +144,7 @@ class OrganizationSyncService:
 
     def get_secret(self, index_id, secret_name):
         encrypt = Secret()
-        organization = self.get_by_index_id(index_id).dict()
+        organization = self.get_by_index_id(index_id).model_dump()
 
         # Find the organization with the given org_id and secret name
         result = self.sync_client.find_one(
