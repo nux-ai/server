@@ -7,7 +7,7 @@ declare -a dirs=("api" "parse" "inference" "storage")
 for dir in "${dirs[@]}"
 do
   # Build the Docker image
-  docker build -t "${dir}_image" "/src/${dir}"
+  docker build -t "${dir}_image" "src/${dir}"
 
   # Run the Docker container
   docker run -d --name "${dir}_container" "${dir}_image"
