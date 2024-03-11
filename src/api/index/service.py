@@ -1,8 +1,8 @@
 from magika import Magika
 from .model import CollectionModel
 
-from storage.plugins.mongodb import MongoDBHandler
-from storage.plugins.redis import RedisHandler
+from storage.plugins.mongodb.service import MongoDBHandler
+from server.src.api.storage.plugins.redis.service import RedisHandler
 
 
 def detect_filetype(contents):
