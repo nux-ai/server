@@ -26,7 +26,7 @@
 
 ## Quickstart
 
-The guide below use nux's [python client](https://github.com/nux/nux-python). For examples interfacing with the nux api directly, see [examples](/examples).
+The guide below use nux's [python client](https://github.com/nux-ai/nux-python). For examples interfacing with the nux api directly, see [examples](/examples).
 
 **Import and initialize the client**
 
