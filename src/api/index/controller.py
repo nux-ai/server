@@ -16,8 +16,3 @@ async def detect_file(file: UploadFile = File(...)):
 async def create_collection(collection: CollectionModel = Body(...)):
     collection_dict = CollectionService.create_collection(collection)
     return collection_dict
-
-
-@router.post("/", response_model=CollectionResponse)
-async def create_collection(collection: CollectionModel = Body(...)):
-    pass
