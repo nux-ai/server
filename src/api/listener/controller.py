@@ -6,20 +6,22 @@ from .service import ListenerAsyncService
 router = APIRouter()
 
 
-@router.post("/{provider_id}/create")
-def create_listener(
+@router.post("/")
+async def create_listener(
     request: Request,
     listener: ListenerCreateRequest = Body(...),
 ):
     listener_service = ListenerAsyncService(request.index_id)
 
-    if listener_service.get_listener(listener.provider_id, listener.listener_name):
+    if await listener_service.get_listener(
+        listener.provider_id, listener.listener_name
+    ):
         raise HTTPException(
             status_code=400,
             detail="Listener with this provider and name already exists",
         )
 
-    resp = listener_service.create_listener(listener.model_dump(by_alias=True))
+    resp = await listener_service.create_listener(listener.model_dump(by_alias=True))
 
     return {"message": "Listener created", "data": resp}
 
