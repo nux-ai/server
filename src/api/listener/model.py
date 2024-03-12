@@ -1,22 +1,18 @@
-from pydantic import BaseModel, confloat
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
 
 
-class ListenerSchema(BaseModel):
+class ListenerSettings(BaseModel):
+    requirements: List[str] = Field(default_factory=list)
+    python_version: Optional[str] = "python3.10"
+
+
+class ListenerCreateRequest(BaseModel):
     index_id: str
-    workbook_id: str
-    author_id: str
-    comment_id: str
-    comment: str
     created_at: datetime
+    provider_id: str
+    code_as_string: str
+    listener_name: Optional[str]
     metadata: Optional[dict] = None
-    replied_to: Optional[str] = None
-
-
-# class CommentRequest(BaseModel):
-#     workbook_id: str
-#     author_id: str
-#     comment: str
-#     metadata: Optional[dict] = None
-#     replied_to: Optional[str] = None
+    settings: Optional[ListenerSettings] = None
