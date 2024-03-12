@@ -64,7 +64,7 @@ class UserModel(BaseModel):
 
 # generate a response with context from results
 generation = client.generate.openai.chat(
-    model={"model_type": "GPT", "model_version": "gpt-3.5-turbo"},
+    model={"type": "GPT", "version": "gpt-3.5-turbo"},
     response_shape=UserModel,
     context=f"Content from resume: {results}",
     messages=[
