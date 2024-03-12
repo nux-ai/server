@@ -7,7 +7,7 @@ import uvicorn
 from files.model import FileData
 from files.service import FileTextExtractor
 
-from website.service import AsyncWebScraper
+from website.service import WebScraper
 from website.model import WebsiteData
 
 from package.model import PackageData
@@ -39,10 +39,10 @@ async def process_file(data: FileData):
     return JSONResponse(content=response, status_code=status_code)
 
 
-@app.post("/process/website", response_model=ApiResponse)
+@app.post("/process/website")
 async def process_website(data: WebsiteData):
-    scraper = AsyncWebScraper(data.website, data.max_depth)
-    response, status_code = await scraper.scrape_data()
+    scraper = WebScraper(data.website, data.max_depth)
+    response, status_code = await scraper.scrapeData()
     return JSONResponse(content=response, status_code=status_code)
 
 
