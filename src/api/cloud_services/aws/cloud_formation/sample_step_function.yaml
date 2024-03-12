@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Creates Lambda functions and a Step Function to orchestrate them.
+
+MyLambdaLayer:
+  Type: AWS::Lambda::LayerVersion
+  Properties:
+    LayerName: "MySharedLayer"
+    Description: "Shared libraries for my Lambda functions"
+    Content: 
+      S3Bucket: !Ref S3BucketName
+      S3Key: "path/to/your/lambda/layer/package.zip"
+    CompatibleRuntimes:
+      - python3.6
+
+Parameters:
+  S3BucketName:
+    Description: Name of the S3 bucket containing Lambda function packages.
+    Type: String
+
+Resources:
+  # Example for a single Lambda function. You would replicate this section for each function.
+  LambdaFunction1:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: "Function1"
+      Handler: "index.handler" # Assuming your handler is named 'handler' in 'index.py'
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: python3.6
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: "path/to/your/lambda1/package.zip"
+      Layers:
+        - !Ref MyLambdaLayer
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: LambdaExecutionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 'logs:*'
+                Resource: 'arn:aws:logs:*:*:*'
+
+  # Step Function State Machine
+  MyStateMachine:
+    Type: "AWS::StepFunctions::StateMachine"
+    Properties:
+      RoleArn: !GetAtt StepFunctionExecutionRole.Arn
+      DefinitionString:
+        !Sub |
+          {
+            "StartAt": "Function1",
+            "States": {
+              "Function1": {
+                "Type": "Task",
+                "Resource": "${LambdaFunction1.Arn}",
+                "End": true
+              }
+            }
+          }
+
+  StepFunctionExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: states.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: StepFunctionExecutionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 'lambda:InvokeFunction'
+                Resource: '*'
+
+Outputs:
+  StepFunctionArn:
+    Description: "ARN of the Step Function"
+    Value: !Ref MyStateMachine
