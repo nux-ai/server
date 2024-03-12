@@ -19,8 +19,14 @@ class ListenerSchema(BaseModel):
     settings: ListenerSettings
 
 
+class ProviderInformation(BaseModel):
+    webhook_url: str
+    metadata: Optional[dict] = {}
+
+
 class ListenerCreateRequest(BaseModel):
     provider_id: str
+    provider_information = ProviderInformation
     code_as_string: str
     listener_name: Optional[str] = Field(default_factory=unique_name)
     metadata: Optional[dict] = {}
