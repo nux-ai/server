@@ -27,9 +27,17 @@ class AsyncWebScraper:
     async def scrape_data(self) -> dict:
         try:
             await self.recursive_scrape(0)
-            return {"status": "success", "data": self.data}
+            return {
+                "status": "ok",
+                "message": "Scraping was successful.",
+                "data": self.data,
+            }, 200
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            return {
+                "status": "error",
+                "message": f"Error during scraping: {str(e)}",
+                "data": None,
+            }, 500
 
     async def recursive_scrape(self, depth: int) -> None:
         if depth > self.max_depth:
