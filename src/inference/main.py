@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from starlette.responses import JSONResponse
 
 # Local application/library specific imports
-from feedback.controller import router as feedback_router
+from api.feedback.controller import router as feedback_router
 
 
 api_router = APIRouter()
