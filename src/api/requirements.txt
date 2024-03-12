@@ -38,3 +38,4 @@ troposphere==4.6.0
 beautifulsoup4==4.12.3
 simplejson==3.19.2
 magika==0.5.1
+haikunator-2.1.0
