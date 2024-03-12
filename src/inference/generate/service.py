@@ -1,26 +1,22 @@
-from models.IModel import IModel
-from models.model import GenerationResponse
+from .models.IModel import IModel
+from .models.model import GenerationRequest, GenerationResponse
 
 from .plugins.openai import GPT
 
 
 class ModelHandler:
     @staticmethod
-    def model_factory(model_type, *args, **kwargs) -> IModel:
-        if model_type.lower() == "gpt":
+    def model_factory(type, *args, **kwargs) -> IModel:
+        if type.lower() == "gpt":
             return GPT(*args, **kwargs)
-        # Add elif for other model types like LLaMA
+        # TODO: Add other model types like LLaMA, etc
         else:
-            raise ValueError(f"Unsupported model type: {model_type}")
+            raise ValueError(f"Unsupported model type: {type}")
 
 
-async def generate_orchestrator(request) -> GenerationResponse:
+async def generate_orchestrator(request: GenerationRequest) -> GenerationResponse:
     model_instance: IModel = ModelHandler.model_factory(
-        request.model.model_type,
-        request.model,
-        request.response_format,
-        request.context,
-        request.messages,
-        request.settings,
+        request.model.type,
+        request,
     )
-    return await model_instance.run()
+    return model_instance.run()
