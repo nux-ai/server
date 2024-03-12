@@ -2,14 +2,16 @@
 from typing import List, Optional
 
 # Related third party imports
-from fastapi import APIRouter, Depends
+import uvicorn
+from fastapi import FastAPI, APIRouter
 from pydantic import BaseModel
 from starlette.responses import JSONResponse
 
 # Local application/library specific imports
-from api.feedback.controller import router as feedback_router
+# from api.feedback.controller import router as feedback_router
+from generate.controller import router as generate_router
 
-
+app = FastAPI(openapi_url="/docs/openapi.json", title="NUX API")
 api_router = APIRouter()
 
 
@@ -33,9 +35,16 @@ api_router = APIRouter(
 )
 
 # NOTE: All api routes should be authenticated by default
-api_router.include_router(feedback_router, prefix="/feedback", tags=["Feedback"])
+api_router.include_router(generate_router, prefix="/generate", tags=["Generate"])
 
 
 @api_router.get("/healthcheck", include_in_schema=False)
 def healthcheck():
     return {"status": "ok"}
+
+
+# Include your routers here
+app.include_router(api_router)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
