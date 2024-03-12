@@ -6,7 +6,7 @@ import io
 import zipfile
 import requests
 
-from utilities.methods import BadRequestError
+from fastapi import HTTPException
 
 
 class CodeZipper:
@@ -16,11 +16,11 @@ class CodeZipper:
         zip_buffer = io.BytesIO()
 
         # Create a new zip file in the buffer
-        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
             # Add the code string as a file to the zip file
-            zip_info = zipfile.ZipInfo(f'{function_name}.py')
+            zip_info = zipfile.ZipInfo(f"{function_name}.py")
             zip_info.external_attr = 0o755 << 16  # permissions -rwxr-xr-x
-            zip_file.writestr(f'{function_name}.py', code_string)
+            zip_file.writestr(f"{function_name}.py", code_string)
 
         zip_buffer.seek(0)
         return zip_buffer
@@ -32,8 +32,7 @@ class PackageZipper:
         self.api_prefix = api_prefix
 
     def call_endpoint(self):
-        response = requests.post(
-            f'{self.api_prefix}/process/package', json=self.data)
+        response = requests.post(f"{self.api_prefix}/process/package", json=self.data)
         return response.json()
 
     def load_zip_in_memory(self, s3_path):
@@ -48,9 +47,9 @@ class PackageZipper:
         zip_buffer.seek(0)
 
         # Open the new zip file and overwrite the Python function
-        with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED) as zip_file:
+        with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED) as zip_file:
             # Create a ZipInfo object to set the permissions
-            zip_info = zipfile.ZipInfo(f'{function_name}.py')
+            zip_info = zipfile.ZipInfo(f"{function_name}.py")
             zip_info.external_attr = 0o755 << 16  # Set permissions to 0o755
 
             zip_file.writestr(zip_info, new_code)
@@ -63,4 +62,4 @@ class PackageZipper:
         try:
             return self.call_endpoint()
         except Exception as e:
-            raise BadRequestError("There was an error creating the function")
+            raise HTTPException(status_code=500, detail=str(e))
