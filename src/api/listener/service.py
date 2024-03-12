@@ -1,33 +1,41 @@
-from db_internal.service import BaseSyncDBService
+from db_internal.service import BaseAsyncDBService
 
-from utilities.methods import BadRequestError
-from utilities.helpers import generate_uuid
+from utilities.helpers import unique_name, generate_function_name
+from utilities.zipper import PackageZipper
 
 
-class CommentSyncService(BaseSyncDBService):
-    def __init__(self, index_id, version_id=None, scope=None):
-        super().__init__("comments", index_id, version_id, scope)
+class ListenerAsyncService(BaseAsyncDBService):
+    def __init__(self, index_id):
+        super().__init__("listeners", index_id)
 
-    def create(
-        self,
-        workbook_id: str,
-        author_id: str,
-        comment: str,
-        metadata: dict,
-        replied_to: str,
-    ):
+    async def get_listener(self, provider_id, listener_name):
+        return await self.get_one(
+            {"provider_id": provider_id, "listener_name": listener_name}
+        )
+
+    async def create_listener(self, listener_dict):
+        # insert listener into db
+        provider_id = listener_dict["provider_id"]
+        listener_name = listener_dict.get("listener_name", unique_name())
+        code_as_string = listener_dict["code_as_string"]
+        settings = listener_dict.get("settings", {})
+
+        # create new package
+        code_function_name = generate_function_name(
+            self.index_id, provider_id, listener_name
+        )
+        pass
+
+    async def process_payload(self):
+        # queue
+        pass
+
+    def _create_new_package(self, code_function_name, code_input):
         obj = {
-            "workbook_id": workbook_id,
-            "author_id": author_id,
-            "comment_id": generate_uuid(length=10, dashes=False),
-            "comment": comment,
-            "metadata": metadata,
-            "replied_to": replied_to,
+            "function_name": code_function_name,
+            "code_as_string": code_input,
+            "requirements": self.parsed_settings["requirements"],
+            "python_version": self.parsed_settings["python_version"],
         }
-        return self.create_one(obj)
-
-    def list(self, lookup_conditions=None, limit=None, offset=None):
-        if lookup_conditions is None:
-            lookup_conditions = {}
-        results = self.list_by_index(lookup_conditions, limit, offset)
-        return results
+        zipper = PackageZipper(obj, self.package_creator_url)
+        return zipper.get_s3_url()
