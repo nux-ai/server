@@ -41,8 +41,8 @@ celery_app.conf.update(
 
 # Initialize MongoDB
 mongo_client = MongoClient(mongo_url)
-sync_db = mongo_client["api"]
-async_db = AsyncIOMotorClient(mongo_url)["api"]
+sync_db = mongo_client["api_2"]
+async_db = AsyncIOMotorClient(mongo_url)["api_2"]
 
 
 class BaseSyncDBService:

@@ -1,7 +1,6 @@
 import secrets
 import re
 import uuid
-from utilities.methods import BadRequestError
 import json
 import random
 import subprocess
@@ -32,10 +31,10 @@ def current_time():
     return datetime.utcnow()
 
 
-def validate_file_size(file, max_size):
-    max_size_bytes = max_size * 1024 * 1024  # Convert max_size from MB to bytes
-    if len(file) > max_size_bytes:
-        raise BadRequestError(detail=f"File size exceeds {max_size} MB")
+# def validate_file_size(file, max_size):
+#     max_size_bytes = max_size * 1024 * 1024  # Convert max_size from MB to bytes
+#     if len(file) > max_size_bytes:
+#         raise BadRequestError(detail=f"File size exceeds {max_size} MB")
 
 
 def random_noun_verb_combo(exclude_list=[]):

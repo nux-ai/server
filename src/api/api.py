@@ -7,8 +7,11 @@ from pydantic import BaseModel
 from starlette.responses import JSONResponse
 
 # Local application/library specific imports
-from feedback.controller import router as feedback_router
-from index.controller import router as index_router
+from auth.service import get_index_id
+
+# Local application/library specific imports
+from listener.controller import router as listener_router
+from organization.controller import router as organization_router
 
 
 api_router = APIRouter()
@@ -33,26 +36,20 @@ api_router = APIRouter(
     },
 )
 
-# # WARNING: Don't use this unless you want unauthenticated routes
-# authenticated_api_router = APIRouter()
 
+# unauthenticated
+api_router.include_router(
+    organization_router, prefix="/organizations", tags=["Organization"]
+)
 
-# def get_organization_path():
-#     pass
-
-
-# authenticated_organization_api_router = APIRouter(
-#     prefix="/{organization}", dependencies=[Depends(get_organization_path)]
-# )
-
-# NOTE: All api routes should be authenticated by default
-api_router.include_router(feedback_router, prefix="/feedback", tags=["Feedback"])
-api_router.include_router(index_router, prefix="/index", tags=["Index"])
+# authenticated
+# fmt: off
+api_router.include_router(listener_router, prefix="/listeners", tags=["Listener"], dependencies=[Depends(get_index_id)])
 
 
 @api_router.get("/", include_in_schema=False)
 def hello_world():
-    return "welcome to the Mixpeek api, check out the docs for more: docs.mixpeek.com"
+    return {"message": "welcome to the NUX api, check out the docs for more: docs.nux.ai"}
 
 
 @api_router.get("/healthcheck", include_in_schema=False)

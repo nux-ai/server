@@ -9,14 +9,15 @@ from enum import Enum
 
 
 class CreateOrgRequest(BaseModel):
-    # email: EmailStr
+    email: EmailStr
     org_metadata: Optional[dict] = {}
-    # user_metadata: Optional[dict] = {}
+    user_metadata: Optional[dict] = {}
 
 
 class SecretRequest(BaseModel):
     name: str
     value: str
+
 
 # responses
 
@@ -29,7 +30,7 @@ class OrgIndexResponse(BaseModel):
 class CodePermissions(BaseModel):
     memory_size: int = Field(default=1024)
     timeout: int = Field(default=60)
-    packages_allowed: List[str] = ['requests']
+    packages_allowed: List[str] = ["requests"]
 
 
 class ModelPermissions(BaseModel):
@@ -43,9 +44,6 @@ class DataPermissions(BaseModel):
 
 
 class Permissions(BaseModel):
-    code: CodePermissions
-    models: ModelPermissions
-    data: DataPermissions
     rate_limit: str = Field(default="10/minute")  # requests per minute
 
 
