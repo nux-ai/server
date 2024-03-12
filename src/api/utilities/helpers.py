@@ -33,7 +33,7 @@ def unique_name(exclude_list=[]):
 
 
 def generate_function_name(index_id, provider_id, function_name):
-    ix = index_id[-10:]
+    ix = index_id[-15:].replace("-", "")
     pv = provider_id
     fx = function_name
     return f"{ix}-{pv}-{fx}"
