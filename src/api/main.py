@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 # we configure the logging level and format
 # configure_logging()
 
-app = FastAPI(openapi_url="/docs/openapi.json", title="Mixpeek API")
+app = FastAPI(openapi_url="/docs/openapi.json", title="NUX API")
 
 app.add_middleware(SentryMiddleware)
 

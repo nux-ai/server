@@ -24,3 +24,6 @@ mongodb_atlas = {
     "private_key": os.getenv("MONGODB_PRIVATE_KEY"),
     "group_id": os.getenv("MONGODB_GROUP_ID"),
 }
+
+# local configs
+auth_off = os.getenv("AUTH_OFF", "False").lower() in ["true", "1"]
