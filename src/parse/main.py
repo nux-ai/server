@@ -33,8 +33,8 @@ class ApiResponse(BaseModel):
 
 
 @app.post("/process/file", response_model=ApiResponse)
-async def process_file(data: FileData):
-    extractor = FileTextExtractor(data.file_url)
+async def process_file(file: UploadFile):
+    extractor = FileTextExtractor(file=file)
     response, status_code = await extractor.extract_text()
     return JSONResponse(content=response, status_code=status_code)
 

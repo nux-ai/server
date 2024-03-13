@@ -26,7 +26,7 @@ class ProviderInformation(BaseModel):
 
 class ListenerCreateRequest(BaseModel):
     provider_id: str
-    provider_information = ProviderInformation
+    provider_information: ProviderInformation
     code_as_string: str
     listener_name: Optional[str] = Field(default_factory=unique_name)
     metadata: Optional[dict] = {}
