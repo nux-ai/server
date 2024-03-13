@@ -87,7 +87,7 @@ class GPT:
 
             response_object.response.append(completion)
             response_object.metadata = {
-                "runtime": (time.time() * 1000) - start_time,
+                "elapsed_time": (time.time() * 1000) - start_time,
                 "output_token_count": completion._raw_response.usage.total_tokens,
             }
             response_object.status = 200
