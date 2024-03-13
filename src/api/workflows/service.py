@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from config import aws, python_version
 
 from db_internal.service import BaseSyncDBService
@@ -14,8 +15,8 @@ class CodeHandler:
     def __init__(self, code_as_string, function_name):
         self.code_as_string = code_as_string
         self.function_name = function_name
-        self.lambda_service = LambdaClass()
-        self.bucket_name = "nux-code-execution"
+        self.lambda_client = LambdaClass()
+        # self.bucket_name = "nux-code-execution"
 
     def validate(self):
         # check security
@@ -34,21 +35,30 @@ class CodeHandler:
         return zipper.get_s3_url()
 
     async def create_new_function(self, code_function_name, code_input):
-        function_s3_data = await self._create_new_package(
-            code_function_name, code_input
-        )
+        # first check if lambda exists
+        if self.lambda_client.get_function(code_function_name):
+            raise HTTPException(detail="Function already exists")
 
-        self.lambda_client.create_with_s3(
-            runtime=self.parsed_settings["python_version"],
-            function_name=code_function_name,
-            s3_bucket=function_s3_data["bucket"],
-            s3_key=function_s3_data["key"],
-            tags={
-                "Context": "Workbook",
-                "WorkbookId": self.workbook_id,
-                "IndexId": self.index_id,
-            },
-        )
+        try:
+            # create new package and upload to s3
+            function_s3_data = await self._create_new_package(
+                code_function_name, code_input
+            )
+
+            # create new lambda function
+            self.lambda_client.create_with_s3(
+                runtime=self.parsed_settings["python_version"],
+                function_name=code_function_name,
+                s3_bucket=function_s3_data["bucket"],
+                s3_key=function_s3_data["key"],
+                tags={
+                    "Context": "Workbook",
+                    "WorkbookId": self.workbook_id,
+                    "IndexId": self.index_id,
+                },
+            )
+        except Exception as e:
+            raise HTTPException(detail=f"Couldn't create function: {e}")
 
 
 class WorkflowSyncService(BaseSyncDBService):
@@ -56,12 +66,6 @@ class WorkflowSyncService(BaseSyncDBService):
         super().__init__("workflows", index_id)
 
     def create(self, workflow_request):
-        # function_name = generate_function_name(self.index_id)
-
-        # code_handler = CodeHandler(workflow_request.code_as_string, function_name)
-        # # Validate the code
-        # code_handler.validate()
-
         new_workflow = WorkflowCreateRequest(
             code_as_string=workflow_request.code_as_string,
             metadata=workflow_request.metadata,
@@ -69,9 +73,12 @@ class WorkflowSyncService(BaseSyncDBService):
             workflow_name=workflow_request.workflow_name,
         )
 
-        function_name = generate_function_name(
-            self.index_id, new_workflow.workflow_name
-        )
+        function_name = generate_function_name(self.index_id, new_workflow.workflow_id)
+
+        code_handler = CodeHandler(new_workflow.code_as_string, function_name)
+        code_handler.validate()
+
+        code_handler.create_new_function(function_name, new_workflow.code_as_string)
 
         return self.create_one(new_workflow.model_dump())
 
