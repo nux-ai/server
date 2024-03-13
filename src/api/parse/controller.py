@@ -15,11 +15,13 @@ async def parse_file(
     parse_handler = ParseHandler(request.index_id)
 
     # one single file_url provided
-    if isinstance(request_body.file_url, str):
+    if isinstance(request_body.file_urls, str):
         return await parse_handler.run_handler_once(
-            modality=modality, file_url=request_body.file_url
+            modality=modality, file_url=request_body.file_urls
         )
 
     # multiple file_urls provided
-    elif isinstance(request_body.file_url, list):
-        raise NotImplementedError
+    elif isinstance(request_body.file_urls, list):
+        raise HTTPException(
+            status_code=400, detail="Multiple file_urls are not supported yet"
+        )

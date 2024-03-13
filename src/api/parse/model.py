@@ -11,4 +11,4 @@ class SupportedModalities(str, Enum):
 
 
 class ParseFileRequest(BaseModel):
-    file_url: Union[str, List[str]]
+    file_urls: Union[str, List[str]]
