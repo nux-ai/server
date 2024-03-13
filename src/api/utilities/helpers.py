@@ -3,6 +3,7 @@ import uuid
 from datetime import datetime
 from urllib.parse import quote_plus
 from haikunator import Haikunator
+from magika import Magika
 
 
 def generate_api_key():
@@ -46,3 +47,19 @@ def convert_to_variable_name(s):
 def make_string_url_safe(s):
     """Convert a string into a URL safe string."""
     return quote_plus(s)
+
+
+def detect_filetype(contents):
+    try:
+        m = Magika()
+        res = m.identify_bytes(contents)
+        data = {
+            "label": res.output.ct_label,
+            "description": res.output.description,
+            "mime_type": res.output.mime_type,
+            "group": res.output.group,
+        }
+
+        return data
+    except Exception as e:
+        raise ValueError("Error occurred while detecting filetype") from e

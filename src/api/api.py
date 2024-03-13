@@ -12,6 +12,7 @@ from auth.service import get_index_id
 # Local application/library specific imports
 from listener.controller import router as listener_router
 from organization.controller import router as organization_router
+from parse.controller import router as parse_router
 
 
 api_router = APIRouter()
@@ -45,7 +46,7 @@ api_router.include_router(
 # authenticated
 # fmt: off
 api_router.include_router(listener_router, prefix="/listeners", tags=["Listener"], dependencies=[Depends(get_index_id)])
-
+api_router.include_router(parse_router, prefix="/parse", tags=["Parse"], dependencies=[Depends(get_index_id)])
 
 @api_router.get("/", include_in_schema=False)
 def hello_world():

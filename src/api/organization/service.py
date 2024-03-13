@@ -93,7 +93,6 @@ class OrganizationSyncService:
 
     def get_index_ids(self, api_key, index_id=None):
         obj = self.get_by_api_key(api_key)
-
         if not obj["indexes"]:
             raise HTTPException(status_code=400, detail="No index_ids for user")
         if index_id and index_id in obj["indexes"]:
