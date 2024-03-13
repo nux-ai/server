@@ -25,5 +25,11 @@ mongodb_atlas = {
     "group_id": os.getenv("MONGODB_GROUP_ID"),
 }
 
+aws = {
+    "access_key": os.getenv("AWS_ACCESS_KEY"),
+    "secret_key": os.getenv("AWS_SECRET_KEY"),
+    "region": os.getenv("AWS_REGION"),
+}
+
 # local configs
 auth_off = os.getenv("AUTH_OFF", "False").lower() in ["true", "1"]
