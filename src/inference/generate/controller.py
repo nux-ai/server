@@ -13,5 +13,4 @@ async def generate(request: GenerationRequest) -> GenerationResponse:
         generate_request = await generate_orchestrator(request)
         return generate_request
     except Exception as e:
-        # You can customize the status code and the detail message based on the exception
         raise HTTPException(status_code=500, detail=str(e))

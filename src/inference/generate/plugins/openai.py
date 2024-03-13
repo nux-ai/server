@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 import time
 
-from ..models.model import GenerationRequest, GenerationResponse, Metadata
+from ..models.model import GenerationRequest, GenerationResponse
 from utilities.methods import generate_uuid
 
 from datamodel_code_generator import DataModelType, PythonVersion
@@ -21,7 +21,6 @@ class GPT:
         self.generation_request = generation_request
 
     def _extract_settings(self):
-        """Extracts and returns non-None settings from the GenerationRequest, excluding 'system_prompt' if it exists."""
         if self.generation_request.settings:
             return {
                 k: v
@@ -49,7 +48,14 @@ class GPT:
             dump_resolve_reference_action=data_model_types.dump_resolve_reference_action,
         )
         result = parser.parse()
-        return result
+        local_namespace = {}
+        exec(result, globals(), local_namespace)
+        model_class = local_namespace.get("Model")
+
+        if model_class is None:
+            raise ValueError(f"JSON Schema parsing failed")
+
+        return model_class
 
     def run(self):
         response_object = GenerationResponse(
@@ -64,7 +70,6 @@ class GPT:
 
         settings = self._extract_settings()
         response_format = self._extract_response_format()
-        print("🚀 ~ response_format:", response_format)
 
         if self.generation_request.context:
             self.generation_request.messages.append(
