@@ -4,8 +4,11 @@ from typing import List, Optional, Dict
 
 
 class Model(BaseModel):
-    type: str = Field(..., description="The type of the model (e.g., GPT, LLaMA).")
-    version: str = Field(..., description="The specific model version.")
+    provider: str = Field(..., description="The type of the model (e.g., GPT, LLaMA).")
+    model: str = Field(
+        ...,
+        description="The specific model version. (e.g. gpt-3.5-turbo, gpt-4-0125-preview)",
+    )
 
 
 class Message(BaseModel):
@@ -57,7 +60,8 @@ class GenerationRequest(BaseModel):
         description="The model configuration, specifying the type and version of the model.",
     )
     response_format: Optional[Dict] = Field(
-        None, description="Optional JSON schema specifying the format of the response from the LLM"
+        None,
+        description="Optional JSON schema specifying the format of the response from the LLM",
     )
     context: Optional[str] = Field(
         None,
@@ -78,9 +82,6 @@ class Metadata(BaseModel):
     output_token_count: Optional[int] = Field(
         ..., description="The number of tokens generated in the response."
     )
-    content_type: Optional[str] = Field(
-        ..., description="The content type of the generated response."
-    )
 
 
 class GenerationResponse(BaseModel):
@@ -91,8 +92,10 @@ class GenerationResponse(BaseModel):
         ..., description="The timestamp of when the generation was created."
     )
     model: Model = Field(..., description="The model used for the generation.")
-    metadata: Optional[Metadata] = Field(..., description="Metadata object for the generation.")
-    data: List[dict] = Field(..., description="A list of generation objects")
+    metadata: Optional[Metadata] = Field(
+        ..., description="Metadata object for the generation."
+    )
+    response: List[dict] = Field(..., description="A list of generation objects")
     error: Optional[dict] = Field(
         None,
         description="Optional field to capture any errors that occurred during the generation process.",

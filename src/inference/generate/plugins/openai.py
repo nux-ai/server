@@ -1,12 +1,12 @@
 from openai import OpenAI
+from fastapi import HTTPException
 import instructor
 from config import openai_key
 import json
-from datetime import datetime
 import time
 
-from ..models.model import GenerationRequest, GenerationResponse
-from utilities.methods import generate_uuid
+from generate.models.model import GenerationRequest, GenerationResponse
+from utilities.methods import generate_uuid, current_time
 
 from datamodel_code_generator import DataModelType, PythonVersion
 from datamodel_code_generator.model import get_data_model_types
@@ -60,10 +60,10 @@ class GPT:
     def run(self):
         response_object = GenerationResponse(
             generation_id=generate_uuid(),
-            created_at=datetime.now(),
+            created_at=current_time(),
             model=self.generation_request.model,
             metadata=None,
-            data=[],
+            response=[],
             error=None,
             status=500,
         )
@@ -79,22 +79,20 @@ class GPT:
         try:
             start_time = time.time() * 1000
             completion = client.chat.completions.create(
-                model=self.generation_request.model.version,
+                model=self.generation_request.model.model,
                 response_model=response_format,
                 messages=self.generation_request.messages,
                 **settings,
             )
 
-            response_object.data.append(completion)
+            response_object.response.append(completion)
             response_object.metadata = {
                 "runtime": (time.time() * 1000) - start_time,
                 "output_token_count": completion._raw_response.usage.total_tokens,
-                "content_type": "application/json",
             }
             response_object.status = 200
 
         except Exception as e:
-            response_object.error = {"message": str(e)}
-            response_object.status = 500
+            raise HTTPException(status_code=500, detail=str(e))
 
         return response_object
