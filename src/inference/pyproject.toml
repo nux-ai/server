@@ -24,6 +24,8 @@ openai = "^1.13.3"
 instructor = "^0.6.4"
 datamodel-code-generator = "^0.25.4"
 pytest = "^8.1.1"
+transformers = "^4.38.2"
+torch = "^2.2.1"
 
 
 [build-system]
