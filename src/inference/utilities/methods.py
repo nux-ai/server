@@ -1,16 +1,14 @@
-import traceback
-from fastapi import HTTPException
-import tiktoken
 import uuid
+from datetime import datetime
 
 
-def get_token_count(model_name, string):
-    """Returns the number of tokens in a text string."""
-    try:
-        encoding = tiktoken.encoding_for_model(model_name)
-    except KeyError:
-        print("Warning: model not found. Using cl100k_base encoding.")
-        encoding = tiktoken.get_encoding("cl100k_base")
+def generate_uuid(length=36, dashes=True):
+    x = uuid.uuid4()
+    if dashes:
+        return str(x)[:length]
+    else:
+        return str(x).replace("-", "")[:length]
 
-    num_tokens = len(encoding.encode(string))
-    return num_tokens
+
+def current_time():
+    return datetime.utcnow()
