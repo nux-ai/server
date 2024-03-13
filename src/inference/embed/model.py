@@ -1,6 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 
 class Modality(Enum):
@@ -11,19 +11,21 @@ class Modality(Enum):
 
 
 class DimensionRequest(BaseModel):
-    modality: Optional[Modality] = None
-    model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+    modality: Optional[Modality] = "text"
+    model: Optional[str] = "sentence-transformers/all-MiniLM-L6-v2"
 
 
 class EmbeddingRequest(BaseModel):
-    input: Optional[str] = None
-    modality: Optional[Modality] = None
-    model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+    input: str
+    modality: Optional[Modality] = "text"
+    model: str = "sentence-transformers/all-MiniLM-L6-v2"
 
 
 class EmbeddingResponse(BaseModel):
-    embedding: float
+    embedding: List[float]
+    elapsed_time: float
 
 
 class DimensionsResponse(BaseModel):
     dimensions: int
+    elapsed_time: float

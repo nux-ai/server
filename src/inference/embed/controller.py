@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import APIRouter  # Import APIRouter instead of FastAPI
 
 from .model import (
     EmbeddingRequest,
@@ -9,18 +9,16 @@ from .model import (
 
 from embed.service import EmbeddingHandler
 
-app = FastAPI()
+router = APIRouter()
 
 
-@app.post("/embed/get-dimensions", response_model=DimensionsResponse)
+@router.get("/dimensions", response_model=DimensionsResponse)
 async def get_dimensions(data: DimensionRequest):
-    embedding_handler = EmbeddingHandler(data.modality, data.model_name)
-    dimensions_int = embedding_handler.encode(data.input)
-    return {"dimensions": dimensions_int}
+    embedding_handler = EmbeddingHandler(data.modality, data.model)
+    return embedding_handler.get_dimensions()
 
 
-@app.post("/embed", response_model=EmbeddingResponse)
+@router.get("/", response_model=EmbeddingResponse)
 async def embed_input(data: EmbeddingRequest):
-    vector_handler = EmbeddingHandler(data.modality, data.model_name)
-    embedding = EmbeddingHandler.encode()
-    return {"embedding": embedding}
+    embedding_handler = EmbeddingHandler(data.modality, data.model)
+    return embedding_handler.encode(data.input)

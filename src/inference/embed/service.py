@@ -1,26 +1,37 @@
 from transformers import AutoTokenizer, AutoModel
 import torch
 import torch.nn.functional as F
+import time
 
 
 class EmbeddingHandler:
-    def __init__(self, modality, model_name):
+    def __init__(self, modality, model):
         if modality == "text":
-            self.service = TextEmbeddingService(model_name)
+            self.service = TextEmbeddingService(model)
         else:
             raise ValueError(f"Unknown modality: {modality}")
 
     def encode(self, data):
-        return self.service.encode(data)
+        start_time = time.time() * 1000
+        embedding = self.service.encode(data).tolist()[0]
+        return {
+            "embedding": embedding,
+            "elapsed_time": (time.time() * 1000) - start_time,
+        }
 
     def get_dimensions(self):
-        return self.service.get_dimensions()
+        start_time = time.time() * 1000
+        dimensions = self.service.get_dimensions()
+        return {
+            "dimensions": dimensions,
+            "elapsed_time": (time.time() * 1000) - start_time,
+        }
 
 
 class TextEmbeddingService:
-    def __init__(self, model_name):
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModel.from_pretrained(model_name)
+    def __init__(self, model):
+        self.tokenizer = AutoTokenizer.from_pretrained(model)
+        self.model = AutoModel.from_pretrained(model)
 
     def mean_pooling(self, model_output, attention_mask):
         token_embeddings = model_output[0]
