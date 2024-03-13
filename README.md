@@ -19,10 +19,15 @@
 </p>
 
 <h2 align="center">
-    <b>nux is a framework for building and deploying retrieval and generation pipelines.</b>
+    <b>nux is a framework for building and deploying intelligence on top of traditional storage.</b>
 </h2>
 
 <!-- ![nux Logo](https://nux.com/static/img/logo-dark.png) -->
+
+## Why Bother?
+
+Companies rarely have data that lives in a single location. Not only does it span various location (S3, Snowflake, MongoDB, etc.) but the data also varies in modality (image, video, audio, text).
+NUX (New User Experience) is an open source developer framework for consolidating insights across the enterprise, and abstracts it down to 2 lines of code. 
 
 ## Quickstart
 
@@ -31,18 +36,14 @@ The guide below use nux's [python client](https://github.com/nux-ai/nux-python).
 **Import and initialize the client**
 
 ```python
-from nuxai import Client
+from nuxai import NUX
+from pydantic import BaseModel
 
-# initialize the connection (everything is encrypted)
-client = Client(
-    engine={
-        "name": "mongodb",
-        "connection_string": "mongodb+srv://username:password@hostname"
-    }
-)
+# init NUX client
+nux = NUX("API-KEY")
 
 # create your first collection
-collection_id = client.create_collection(namespace="files.resume")
+collection_id = nux.create_collection(namespace="files.resume")
 ```
 
 **Configure and initiate the indexing worker**
@@ -133,7 +134,7 @@ Handles the generation and fine-tuning of content based on the indexed data.
 
 Future enhancements planned for OSS nux:
 
-- [ ] CDC connection with databases for real-time sync
+- [ ] CDC connection with databases, storage for real-time sync
 - [ ] Fine-tuning support for BERT encoders and LoRa adapters.
 - [ ] Integration with hybrid databases (Weaviate, Qdrant, and Redis).
 - [ ] Multimodal querying & generation
