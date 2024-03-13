@@ -8,10 +8,10 @@ from pydantic import BaseModel
 from starlette.responses import JSONResponse
 
 # Local application/library specific imports
-# from api.feedback.controller import router as feedback_router
 from generate.controller import router as generate_router
+from embed.controller import router as embed_router
 
-app = FastAPI(openapi_url="/docs/openapi.json", title="NUX API")
+app = FastAPI(openapi_url="/docs/openapi.json", title="NUX Inference API")
 api_router = APIRouter()
 
 
@@ -34,8 +34,9 @@ api_router = APIRouter(
     },
 )
 
-# NOTE: All api routes should be authenticated by default
+
 api_router.include_router(generate_router, prefix="/generate", tags=["Generate"])
+api_router.include_router(embed_router, prefix="/embed", tags=["Embed"])
 
 
 @api_router.get("/healthcheck", include_in_schema=False)
@@ -45,6 +46,3 @@ def healthcheck():
 
 # Include your routers here
 app.include_router(api_router)
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)

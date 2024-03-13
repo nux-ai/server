@@ -1,5 +1,5 @@
 from pydantic.errors import PydanticValueError
 
 
-class MixpeekException(Exception):
+class NuxException(Exception):
     pass

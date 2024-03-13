@@ -1,10 +1,19 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, Field
+from typing import Optional, Dict, Any
+import uvicorn
 
-
+from files.model import FileData
 from files.service import FileTextExtractor
+
+from website.service import WebScraper
+from website.model import WebsiteData
+
+from package.model import PackageData
+from package.service import PackageManager
+
+
 import tika
 
 tika.initVM()
@@ -12,68 +21,42 @@ tika.initVM()
 app = FastAPI()
 
 
-class FileData(BaseModel):
-    file: Optional[UploadFile] = None
-    file_url: Optional[str] = None
+class ResponseData(BaseModel):
+    text: Optional[str] = Field(None, description="Extracted text from the file")
+    metadata: Optional[Dict[str, Any]] = Field(None, description="Metadata of the file")
 
 
-class WebsiteData(BaseModel):
-    website: str
-    max_depth: int
+class ApiResponse(BaseModel):
+    status: str = Field(..., description="Status of the request")
+    message: str = Field(..., description="Detailed message")
+    data: Optional[ResponseData] = Field(None, description="Data of the response")
 
 
-@app.post("/process/file")
-async def process_file(data: FileData):
-    if data.file:
-        # Read the uploaded file into memory and process it
-        file_content = await data.file.read()
-        extractor = FileTextExtractor(file=file_content)
-    else:
-        # Process the file URL as before
-        extractor = FileTextExtractor(file_url=data.file_url)
+@app.post("/process/file", response_model=ApiResponse)
+async def process_file(file: UploadFile):
+    extractor = FileTextExtractor(file=file)
     response, status_code = await extractor.extract_text()
     return JSONResponse(content=response, status_code=status_code)
 
 
-# from website.service import WebScraper
-# from nux import Nux
-# from website_scraper import WebScraper
-
-# class WebsiteData(BaseModel):
-#     website: str
-#     api_key: str
-#     max_depth: int
-#     loader_id: str
-
-# @app.post('/process/website')
-# async def process_website(data: WebsiteData):
-#     task = website_handler.delay(
-#         website_url=data.website,
-#         nux_api_key=data.api_key,
-#         max_depth=data.max_depth,
-#         loader_id=data.loader_id
-#     )
-
-#     return {"task_id": task.id}
+@app.post("/process/website")
+async def process_website(data: WebsiteData):
+    scraper = WebScraper(data.website, data.max_depth)
+    response, status_code = await scraper.scrapeData()
+    return JSONResponse(content=response, status_code=status_code)
 
 
-# def website_handler(website_url, nux_api_key, max_depth, loader_id):
-#     # scrape contents
-#     scraper = WebScraper(
-#         url=website_url,
-#         maxDepth=max_depth
-#     )
-#     # objects of resources
-#     results = scraper.scrapeData()
-#     list_of_urls = results['Internal']
+@app.post("/process/package", response_model=ApiResponse)
+async def process_request(data: PackageData):
+    processor = PackageManager()
+    response, status_code = await processor.process(data.model_dump())
+    return JSONResponse(content=response, status_code=status_code)
 
-#     nux = Nux(api_key=nux_api_key)
 
-#     # send each to nux loader as html (with embed)
-#     nux.index_urls(
-#         urls=list_of_urls,
-#         api_key=nux_api_key,
-#         loader_id=loader_id,
-#         embed=True,
-#         metadata={}
-#     )
+@app.get("/healthcheck")
+async def healthcheck():
+    return {"status": "ok"}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8001)

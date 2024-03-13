@@ -11,8 +11,8 @@ class FileTextExtractor:
     async def download_file_to_memory(self):
         if self.file:
             # Read the file into memory
-            return BytesIO(self.file.read()), None, 200
-        else:
+            return BytesIO(await self.file.read()), None, 200
+        elif self.file_url:
             try:
                 async with httpx.AsyncClient() as client:
                     response = await client.get(self.file_url)
@@ -29,8 +29,9 @@ class FileTextExtractor:
                 # Catch any other httpx exceptions
                 return None, f"Error downloading the file: {e}", 500
             except Exception as e:
-                # Catch all other exceptions
                 return None, f"Unexpected error downloading the file: {e}", 500
+        else:
+            return None, "No file or file URL provided", 400
 
     async def extract_text(self):
         file_stream, error_message, status_code = await self.download_file_to_memory()
