@@ -1,12 +1,12 @@
 from urllib.parse import quote
 import boto3
 import json
-from config import nux_aws_creds as creds
+from config import aws as creds
 import io
 import os
 import requests
 
-from utilities.methods import BadRequestError
+from _exceptions import BadRequestError
 
 
 class S3Class:
