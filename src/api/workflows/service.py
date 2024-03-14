@@ -7,7 +7,7 @@ from .model import WorkflowCreateRequest
 from .utilities import CodeHandler
 
 
-from utilities.helpers import generate_function_name
+from utilities.helpers import generate_function_name, current_time
 
 
 class WorkflowSyncService(BaseSyncDBService):
@@ -46,11 +46,12 @@ class WorkflowSyncService(BaseSyncDBService):
         # print(s3_dict)
 
         # create lambda function
-        p = code_handler.create_lambda_function(s3_dict["bucket"], s3_dict["key"])
-        print(p)
+        code_handler.create_lambda_function(s3_dict["bucket"], s3_dict["key"])
 
-        # return self.create_one(new_workflow.model_dump())
-        return "ok"
+        new_workflow.metadata["lambda_function_name"] = function_name
+        new_workflow.metadata["lambda_last_edited"] = current_time()
+
+        return self.create_one(new_workflow.model_dump())
 
     def list(self, lookup_conditions=None, limit=None, offset=None):
         if lookup_conditions is None:
