@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "api"
+version = "0.1.0"
+description = "nux is a framework for building and deploying intelligence on top of traditional storage."
+authors = ["goudete <goudetenrique@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+fastapi = "^0.110.0"
+uvicorn = "^0.28.0"
+haikunator = "^2.1.0"
+magika = "0.5.1"
+cryptography = "^42.0.5"
+bson = "^0.5.10"
+pymongo = "^4.6.2"
+kombu = "^5.3.5"
+motor = "^3.3.2"
+redis = "^5.0.3"
+celery = "^5.3.6"
+email-validator = "^2.1.1"
+requests = "^2.31.0"
+httpx = "^0.27.0"
+boto3 = "^1.34.63"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

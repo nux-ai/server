@@ -1,7 +1,14 @@
-from fastapi import HTTPException
-
 from generate.models.IModel import IModel
 from generate.models.model import GenerationRequest, GenerationResponse
+from _exceptions import (
+    UnsupportedModelProviderError,
+    UnsupportedModelVersionError,
+    JSONSchemaParsingError,
+    ModelExecutionError,
+    BadRequestError,
+    NotFoundError,
+    InternalServerError,
+)
 
 from generate.plugins.openai import GPT
 
@@ -13,7 +20,9 @@ class ModelHandler:
             return GPT(*args, **kwargs)
         # TODO: Add other model types like LLaMA, etc
         else:
-            raise ValueError(f"Unsupported model provider: {provider}")
+            raise UnsupportedModelProviderError(
+                f"Unsupported model provider: {provider}"
+            )
 
 
 async def generate_orchestrator(request: GenerationRequest) -> GenerationResponse:
@@ -23,7 +32,15 @@ async def generate_orchestrator(request: GenerationRequest) -> GenerationRespons
             request,
         )
         return model_instance.run()
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+
+    except UnsupportedModelProviderError as e:
+        raise BadRequestError(error="Unsupported model provider.")
+
+    except UnsupportedModelVersionError as e:
+        raise NotFoundError(error="Unsupported model version.")
+
+    except JSONSchemaParsingError as e:
+        raise BadRequestError(error="JSON schema parsing error. Please make sure you provided a valid json schema.")
+
+    except ModelExecutionError as e:
+        raise InternalServerError(error="Something went wrong when calling the model. Please try again.")
