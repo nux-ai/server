@@ -87,9 +87,6 @@ class GenerationResponse(BaseModel):
     success: bool = Field(
         ..., description="Whether the GenerationResponse succeeded or failed."
     )
-    success: bool = Field(
-        ..., description="HTTP status code representing the outcome of the generation."
-    )
     status: int = Field(
         ..., description="HTTP status code representing the outcome of the generation."
     )

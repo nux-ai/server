@@ -1,19 +1,21 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request, Body
 from _exceptions import BadRequestError, InternalServerError, NotFoundError
 
-from generate.model import GenerationResponse, GenerationRequest
-from generate.service import GenerateHandler
+from .model import GenerationResponse, GenerationRequest
+from .service import GenerateHandler
 
 
 router = APIRouter()
 
 
 @router.post("/", response_model=GenerationResponse)
-async def generate(request: GenerationRequest) -> GenerationResponse:
+async def generate(
+    request: Request,
+    generation_request: GenerationRequest = Body(...),
+):
     try:
-        generate_handler = GenerateHandler(request)
-        generate_request = await generate_handler._generate()
-        return generate_request
+        generate_handler = GenerateHandler(request.index_id, generation_request)
+        return await generate_handler._generate()
     except BadRequestError as e:
         raise BadRequestError(error=e.error)
     except NotFoundError as e:
