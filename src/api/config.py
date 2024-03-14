@@ -29,6 +29,7 @@ aws = {
     "access_key": os.getenv("AWS_ACCESS_KEY"),
     "secret_key": os.getenv("AWS_SECRET_KEY"),
     "region": os.getenv("AWS_REGION"),
+    "arn_lambda": os.getenv("AWS_ARN_LAMBDA"),
 }
 
 # local configs

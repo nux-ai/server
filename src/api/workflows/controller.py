@@ -9,17 +9,14 @@ from db_internal.model import PaginationParams
 router = APIRouter()
 
 
-@router.post("/", response_model=WorkflowSchema)
+@router.post("/")
 async def create_workflow(
     request: Request,
     workflow_request: WorkflowCreateRequest = Body(...),
     pagination: PaginationParams = Depends(),
 ):
     workflow_service = WorkflowSyncService(request.index_id)
-    try:
-        return workflow_service.create(workflow_request)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Couldn't create workflow: {e}")
+    return workflow_service.create(workflow_request)
 
 
 # @router.get('/', response_model=List[WorkflowMinimalResponse])
