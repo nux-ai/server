@@ -1,5 +1,6 @@
 from urllib.parse import quote
 import boto3
+import aioboto3
 import json
 from config import aws as creds
 import io
@@ -7,6 +8,25 @@ import os
 import requests
 
 from fastapi import HTTPException
+
+
+class AsyncLambdaClass:
+    def __init__(self, timeout=900, memory_size=1024):
+        self.session = aioboto3.Session(
+            aws_access_key_id=creds["access_key"],
+            aws_secret_access_key=creds["secret_key"],
+            region_name=creds["region"],
+        )
+
+    async def invoke(self, function_name, payload):
+        async with self.session.client("lambda") as client:
+            response = await client.invoke(
+                FunctionName=function_name,
+                InvocationType="RequestResponse",
+                Payload=json.dumps(payload),
+            )
+            response_payload = await response["Payload"].read()
+            return json.loads(response_payload)
 
 
 class LambdaClass:

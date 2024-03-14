@@ -3,10 +3,17 @@ from typing import List, Optional
 
 from utilities.helpers import generate_uuid, current_time
 
-from .model import WorkflowCreateRequest, WorkflowMinimalResponse, WorkflowSchema
-from .service import WorkflowSyncService, WorkflowRunService
+from .model import (
+    WorkflowCreateRequest,
+    WorkflowMinimalResponse,
+    WorkflowSchema,
+    QueryParamsSchema,
+    WorkflowInvokeResponse,
+)
+from .service import WorkflowSyncService
+from .invoke import invoke_handler
 
-from db_internal.model import PaginationParams, QueryParamsSchema
+from db_internal.model import PaginationParams
 
 router = APIRouter()
 
@@ -21,14 +28,14 @@ async def create_workflow(
     return workflow_service.create(workflow_request)
 
 
-@router.post("/{workflow_id}/run")
+@router.post("/{workflow_id}/invoke", response_model=WorkflowInvokeResponse)
 async def run_workflow(
     request: Request,
     workflow_id: str,
-    parameters: Optional[QueryParamsSchema] = None,
+    parameters: dict = Body(...),
     websocket_id: Optional[str] = None,
 ):
-    workflow_service = WorkflowRunService(request.index_id)
+    workflow_service = WorkflowSyncService(request.index_id)
 
     workflow = workflow_service.get(workflow_id)
     if not workflow:
@@ -41,19 +48,17 @@ async def run_workflow(
             detail=f"Workflow {workflow_id} has no serverless function.",
         )
 
-    # run orchestrator
-    task = await workflow_service.run(
-        workflow=workflow,
+    # run invokation
+    result = await invoke_handler(
+        serverless_name=workflow["metadata"]["serverless_function_name"],
         run_id=generate_uuid(),
         websocket_id=websocket_id,
         request_parameters=parameters,
     )
 
-    workflow_service.update({"last_run": current_time()})
+    workflow_service.update(workflow_id, {"last_run": current_time()})
 
-    # remove objectId
-    task.pop("_id")
-    return task
+    return result
 
 
 # @router.get('/', response_model=List[WorkflowMinimalResponse])
