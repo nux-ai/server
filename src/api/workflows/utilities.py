@@ -72,8 +72,8 @@ class CodeHandler:
             },
         )
 
-    async def invoke_lambda_function(self, payload):
-        return self.lambda_client.invoke(self.function_name, payload)
+    def run(self, function_name, payload):
+        return self.lambda_client.invoke(function_name, payload)
 
 
 # def check_parameters(parameters: Optional[QueryParamsSchema], workbook: dict):

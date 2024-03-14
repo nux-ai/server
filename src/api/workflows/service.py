@@ -64,8 +64,11 @@ class WorkflowSyncService(BaseSyncDBService):
         """Get a single workflow by ID."""
         return self.get_one({"workflow_id": workflow_id})
 
-    @staticmethod
-    def run(workflow, run_id, websocket_id, request_parameters):
+    def run(self, workflow, run_id, websocket_id, request_parameters):
+        code_handler = CodeHandler(
+            self.index_id,
+            workflow["workflow_id"],
+        )
         response_object = {
             "response": None,
             "error": None,
@@ -74,8 +77,13 @@ class WorkflowSyncService(BaseSyncDBService):
         }
         try:
             print("Running function!")
-            response = code_handler.run(request_parameters, workflow)
+            response = code_handler.run(
+                workflow["metadata"]["serverless_function_name"],
+                request_parameters.model_dump(),
+            )
             response_object["response"] = response
         except Exception as e:
             response_object["error"] = f"Error running lambda: {e}"
             response_object["status"] = 500
+
+        return response_object
