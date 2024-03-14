@@ -1,8 +1,17 @@
 from fastapi import APIRouter, HTTPException, Body, Depends, Request
-from typing import List
+from typing import List, Optional
 
-from .model import WorkflowCreateRequest, WorkflowMinimalResponse, WorkflowSchema
+from utilities.helpers import generate_uuid, current_time
+
+from .model import (
+    WorkflowCreateRequest,
+    WorkflowMinimalResponse,
+    WorkflowSchema,
+    QueryParamsSchema,
+    WorkflowInvokeResponse,
+)
 from .service import WorkflowSyncService
+from .invoke import invoke_handler
 
 from db_internal.model import PaginationParams
 
@@ -16,10 +25,40 @@ async def create_workflow(
     pagination: PaginationParams = Depends(),
 ):
     workflow_service = WorkflowSyncService(request.index_id)
-    try:
-        return workflow_service.create(workflow_request)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Couldn't create workflow: {e}")
+    return workflow_service.create(workflow_request)
+
+
+@router.post("/{workflow_id}/invoke", response_model=WorkflowInvokeResponse)
+async def run_workflow(
+    request: Request,
+    workflow_id: str,
+    parameters: dict = Body(...),
+    websocket_id: Optional[str] = None,
+):
+    workflow_service = WorkflowSyncService(request.index_id)
+
+    workflow = workflow_service.get(workflow_id)
+    if not workflow:
+        raise HTTPException(
+            status_code=404, detail=f"Workflow {workflow_id} not found."
+        )
+    if workflow.get("metadata", {}).get("serverless_function_name") is None:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Workflow {workflow_id} has no serverless function.",
+        )
+
+    # run invokation
+    result = await invoke_handler(
+        serverless_name=workflow["metadata"]["serverless_function_name"],
+        run_id=generate_uuid(),
+        websocket_id=websocket_id,
+        request_parameters=parameters,
+    )
+
+    workflow_service.update(workflow_id, {"last_run": current_time()})
+
+    return result
 
 
 # @router.get('/', response_model=List[WorkflowMinimalResponse])

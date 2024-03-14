@@ -19,7 +19,8 @@
 </p>
 
 <h2 align="center">
-    <b>nux is a framework for building and deploying intelligence on top of traditional storage.</b>
+    <b>serverless infrastructure for multimodal indexing, retrieving and generation. integrate in one line of code. completely open source. 
+    </b>
 </h2>
 
 <!-- ![nux Logo](https://nux.com/static/img/logo-dark.png) -->
