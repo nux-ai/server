@@ -24,6 +24,9 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: List API directory contents
+      run: ls -l src/api
+
     - name: Build and push API Docker Image
       uses: docker/build-push-action@v2
       with:
