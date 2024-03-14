@@ -33,3 +33,6 @@ aws = {
 
 # local configs
 auth_off = os.getenv("AUTH_OFF", "False").lower() in ["true", "1"]
+
+# services
+inference_url = os.getenv("INFERENCE_URL")

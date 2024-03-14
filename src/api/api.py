@@ -14,6 +14,7 @@ from listeners.controller import router as listener_router
 from organization.controller import router as organization_router
 from parse.controller import router as parse_router
 from workflows.controller import router as workflow_router
+from generate.controller import router as generate_router
 
 
 api_router = APIRouter()
@@ -49,6 +50,7 @@ api_router.include_router(
 api_router.include_router(listener_router, prefix="/listeners", tags=["Listener"], dependencies=[Depends(get_index_id)])
 api_router.include_router(parse_router, prefix="/parse", tags=["Parse"], dependencies=[Depends(get_index_id)])
 api_router.include_router(workflow_router, prefix="/workflows", tags=["Workflow"], dependencies=[Depends(get_index_id)])
+api_router.include_router(generate_router, prefix="/generate", tags=["Generate"], dependencies=[Depends(get_index_id)])
 
 
 # fmt: on
