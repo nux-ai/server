@@ -8,6 +8,8 @@ import requests
 
 from fastapi import HTTPException
 
+from config import parser_url
+
 
 class CodeZipper:
     @staticmethod
@@ -27,12 +29,11 @@ class CodeZipper:
 
 
 class PackageZipper:
-    def __init__(self, data, api_prefix):
+    def __init__(self, data):
         self.data = data
-        self.api_prefix = api_prefix
 
     def call_endpoint(self):
-        response = requests.post(f"{self.api_prefix}/process/package", json=self.data)
+        response = requests.post(f"{parser_url}/process/package", json=self.data)
         return response.json()
 
     def load_zip_in_memory(self, s3_path):
