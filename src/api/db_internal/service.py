@@ -1,18 +1,14 @@
 from json import JSONEncoder
 from bson import ObjectId
 from bson.json_util import dumps
-from kombu.serialization import register
 from pymongo import MongoClient, ReturnDocument
 from motor.motor_asyncio import AsyncIOMotorClient
 from config import mongo_url, redis_url
 import json
 from utilities.helpers import current_time
-import redis
-import hashlib
 import pickle
-import time
 
-from celery import Celery, current_task
+from celery import Celery
 
 celery_app = Celery(
     "worker",
