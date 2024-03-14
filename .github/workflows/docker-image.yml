@@ -24,11 +24,26 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    # Step for Dockerfile 1
-    - name: Build and push Docker image 1
+    - name: Build and push API Docker Image
       uses: docker/build-push-action@v2
       with:
         context: src/api
         file: ./Dockerfile
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/service1-image:latest
+        tags: ghcr.io/${{ github.repository_owner }}/nux-server-api:latest
+
+    - name: Build and push Inference Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: src/inference
+        file: ./Dockerfile
+        push: true
+        tags: ghcr.io/${{ github.repository_owner }}/nux-server-inference:latest
+
+    - name: Build and push Parse Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: src/parse
+        file: ./Dockerfile
+        push: true
+        tags: ghcr.io/${{ github.repository_owner }}/nux-server-parse:latest
