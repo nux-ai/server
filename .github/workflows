@@ -1,0 +1,52 @@
+name: Build and Push Docker images
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: docker/setup-buildx-action@v1
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    # Step for Dockerfile 1
+    - name: Build and push Docker image 1
+      uses: docker/build-push-action@v2
+      with:
+        context: ./src/api
+        file: .Dockerfile
+        push: true
+        tags: ghcr.io/${{ github.repository_owner }}/service1-image:latest
+
+    # # Step for Dockerfile 2
+    # - name: Build and push Docker image 2
+    #   uses: docker/build-push-action@v2
+    #   with:
+    #     context: ./service2
+    #     file: ./service2/Dockerfile
+    #     push: true
+    #     tags: ghcr.io/${{ github.repository_owner }}/service2-image:latest
+
+    # # Step for Dockerfile 3
+    # - name: Build and push Docker image 3
+    #   uses: docker/build-push-action@v2
+    #   with:
+    #     context: ./service3
+    #     file: ./service3/Dockerfile
+    #     push: true
+    #     tags: ghcr.io/${{ github.repository_owner }}/service3-image:latest
