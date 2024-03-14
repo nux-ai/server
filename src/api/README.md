@@ -5,31 +5,33 @@
 Add a brief description of your project here.
 
 ## Setup
+We use poetry for dependency management. Make sure to install it first before proceeding.
+Poetry Installation: https://python-poetry.org/docs/
 
 Follow these steps to set up the project:
 
 1. **Create a virtual environment**
    ```
-   virtualenv venv
+   poetry env use python3.10
    ```
 
 2. **Activate the virtual environment**
    ```
-   source venv/bin/activate
+   poetry shell
    ```
 
 3. **Install the requirements**
    ```
-   pip install -r requirements
+   poetry install
    ```
 
 4. **Run the local server**
    ```
-   uvicorn main:app --reload
+   poetry run uvicorn main:app --reload
    ```
     or
     ```
-    python3 -m uvicorn main:app --reload
+    poetry run python3 -m uvicorn main:app --reload
     ```
 
 Docs are at `/docs`,
