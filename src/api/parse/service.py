@@ -35,6 +35,7 @@ class ParseHandler:
         self.parse_classes = {"text": Text}
 
     async def run_handler_once(self, modality, file_url):
+        # TODO: get file type from magic
         if modality.lower() in self.parse_classes:
 
             # ensure doesn't exceed filesize limit
