@@ -1,4 +1,5 @@
 from typing import Optional
+import traceback
 
 
 class NuxException(Exception):
@@ -18,6 +19,7 @@ class NuxException(Exception):
 
 class InternalServerError(NuxException):
     def __init__(self, error: Optional[dict] = None, response: Optional[dict] = None):
+        traceback.print_exc()
         super().__init__(
             success=False,
             status=500,
