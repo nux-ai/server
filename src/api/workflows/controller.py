@@ -1,10 +1,12 @@
 from fastapi import APIRouter, HTTPException, Body, Depends, Request
-from typing import List
+from typing import List, Optional
+
+from utilities.helpers import generate_uuid, current_time
 
 from .model import WorkflowCreateRequest, WorkflowMinimalResponse, WorkflowSchema
-from .service import WorkflowSyncService
+from .service import WorkflowSyncService, WorkflowRunService
 
-from db_internal.model import PaginationParams
+from db_internal.model import PaginationParams, QueryParamsSchema
 
 router = APIRouter()
 
@@ -17,6 +19,41 @@ async def create_workflow(
 ):
     workflow_service = WorkflowSyncService(request.index_id)
     return workflow_service.create(workflow_request)
+
+
+@router.post("/{workflow_id}/run")
+async def run_workflow(
+    request: Request,
+    workflow_id: str,
+    parameters: Optional[QueryParamsSchema] = None,
+    websocket_id: Optional[str] = None,
+):
+    workflow_service = WorkflowRunService(request.index_id)
+
+    workflow = workflow_service.get(workflow_id)
+    if not workflow:
+        raise HTTPException(
+            status_code=404, detail=f"Workflow {workflow_id} not found."
+        )
+    if workflow.get("metadata", {}).get("serverless_function_name") is None:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Workflow {workflow_id} has no serverless function.",
+        )
+
+    # run orchestrator
+    task = await workflow_service.run(
+        workflow=workflow,
+        run_id=generate_uuid(),
+        websocket_id=websocket_id,
+        request_parameters=parameters,
+    )
+
+    workflow_service.update({"last_run": current_time()})
+
+    # remove objectId
+    task.pop("_id")
+    return task
 
 
 # @router.get('/', response_model=List[WorkflowMinimalResponse])

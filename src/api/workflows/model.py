@@ -1,7 +1,11 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Any
 from datetime import datetime
 from utilities.helpers import unique_name, generate_uuid
+
+
+class QueryParamsSchema(BaseModel):
+    parameters: dict
 
 
 class WorkflowSettings(BaseModel):
@@ -12,11 +16,13 @@ class WorkflowSettings(BaseModel):
 class WorkflowSchema(BaseModel):
     index_id: str
     created_at: datetime
+    last_run: Optional[datetime]
     workflow_id: str
     code_as_string: str
     workflow_name: Optional[str]
     metadata: Optional[dict] = {}
     settings: WorkflowSettings
+    parameters: dict
 
 
 class WorkflowCreateRequest(BaseModel):

@@ -9,7 +9,7 @@ from fastapi import HTTPException
 
 
 class CodeHandler:
-    def __init__(self, index_id, workflow_id, code_as_string, function_name):
+    def __init__(self, index_id, workflow_id, code_as_string=None, function_name=None):
         self.index_id = index_id
         self.workflow_id = workflow_id
         self.code_as_string = code_as_string
@@ -71,3 +71,31 @@ class CodeHandler:
                 "WorkflowId": self.workflow_id,
             },
         )
+
+    async def invoke_lambda_function(self, payload):
+        return self.lambda_client.invoke(self.function_name, payload)
+
+
+# def check_parameters(parameters: Optional[QueryParamsSchema], workbook: dict):
+#     request_parameters = parameters.model_dump()["parameters"] if parameters else {}
+
+#     # Get the keys from the workbook's parameters
+#     wb_param_keys = [param["key"] for param in workbook["parameters"]]
+
+#     # if user supplied parameters
+#     if request_parameters:
+#         print("user supplied parameters checking if all are present in workbook")
+#         # Check if all keys in the user's parameters are present in the workbook's parameters
+#         for param in request_parameters:
+#             if param not in wb_param_keys:
+#                 raise HTTPException(
+#                     status_code=400,
+#                     detail=f"Parameter {param} not found in workbook parameters.",
+#                 )
+#     else:
+#         print("no parameters supplied checking if workbook has default parameters")
+#         for param in workbook["parameters"]:
+#             if "default" in param:
+#                 request_parameters[param["key"]] = param["default"]
+
+#     return request_parameters

@@ -48,8 +48,8 @@ class WorkflowSyncService(BaseSyncDBService):
         # create lambda function
         code_handler.create_lambda_function(s3_dict["bucket"], s3_dict["key"])
 
-        new_workflow.metadata["lambda_function_name"] = function_name
-        new_workflow.metadata["lambda_last_edited"] = current_time()
+        new_workflow.metadata["serverless_function_name"] = function_name
+        new_workflow.metadata["serverless_last_edited"] = current_time()
 
         return self.create_one(new_workflow.model_dump())
 
@@ -63,3 +63,19 @@ class WorkflowSyncService(BaseSyncDBService):
     def get(self, workflow_id):
         """Get a single workflow by ID."""
         return self.get_one({"workflow_id": workflow_id})
+
+    @staticmethod
+    def run(workflow, run_id, websocket_id, request_parameters):
+        response_object = {
+            "response": None,
+            "error": None,
+            "status": 500,
+            "metadata": {},
+        }
+        try:
+            print("Running function!")
+            response = code_handler.run(request_parameters, workflow)
+            response_object["response"] = response
+        except Exception as e:
+            response_object["error"] = f"Error running lambda: {e}"
+            response_object["status"] = 500
