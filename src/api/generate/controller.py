@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import ValidationError
+from fastapi import APIRouter
+from _exceptions import BadRequestError, InternalServerError, NotFoundError
 
 from generate.model import GenerationResponse, GenerationRequest
 from generate.service import GenerateHandler
@@ -14,7 +14,12 @@ async def generate(request: GenerationRequest) -> GenerationResponse:
         generate_handler = GenerateHandler(request)
         generate_request = await generate_handler._generate()
         return generate_request
-    except ValidationError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except BadRequestError as e:
+        raise BadRequestError(error=e.error)
+    except NotFoundError as e:
+        raise NotFoundError(error=e.error)
+    except InternalServerError as e:
+        raise InternalServerError(error=e.error)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print("ERROR: ", e)
+        raise InternalServerError(error="Internal Server Error")

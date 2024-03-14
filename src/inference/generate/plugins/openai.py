@@ -1,12 +1,16 @@
-from openai import OpenAI
-from fastapi import HTTPException
+from openai import OpenAI, NotFoundError
 import instructor
 from config import openai_key
 import json
 import time
 
 from generate.models.model import GenerationRequest, GenerationResponse
-from utilities.methods import generate_uuid, current_time
+from _utils import generate_uuid, current_time
+from _exceptions import (
+    JSONSchemaParsingError,
+    ModelExecutionError,
+    UnsupportedModelVersionError,
+)
 
 from datamodel_code_generator import DataModelType, PythonVersion
 from datamodel_code_generator.model import get_data_model_types
@@ -53,7 +57,7 @@ class GPT:
         model_class = local_namespace.get("Model")
 
         if model_class is None:
-            raise ValueError(f"JSON Schema parsing failed")
+            raise JSONSchemaParsingError(f"JSON Schema parsing failed")
 
         return model_class
 
@@ -63,9 +67,10 @@ class GPT:
             created_at=current_time(),
             model=self.generation_request.model,
             metadata=None,
-            response=[],
+            response={},
             error=None,
             status=500,
+            success=False,
         )
 
         settings = self._extract_settings()
@@ -85,14 +90,16 @@ class GPT:
                 **settings,
             )
 
-            response_object.response.append(completion)
+            response_object.response = completion
             response_object.metadata = {
                 "elapsed_time": (time.time() * 1000) - start_time,
                 "output_token_count": completion._raw_response.usage.total_tokens,
             }
             response_object.status = 200
-
+            response_object.success = True
+        except NotFoundError as e:
+            raise UnsupportedModelVersionError()
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise ModelExecutionError()
 
         return response_object

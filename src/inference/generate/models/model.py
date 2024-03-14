@@ -56,7 +56,6 @@ class Settings(BaseModel):
 
 class GenerationRequest(BaseModel):
     model: Model = Field(
-        default={"type": "GPT", "version": "gpt-3.5-turbo"},
         description="The model configuration, specifying the type and version of the model.",
     )
     response_format: Optional[Dict] = Field(
@@ -85,6 +84,17 @@ class Metadata(BaseModel):
 
 
 class GenerationResponse(BaseModel):
+    success: bool = Field(
+        ..., description="Whether the GenerationResponse succeeded or failed."
+    )
+    status: int = Field(
+        ..., description="HTTP status code representing the outcome of the generation."
+    )
+    error: Optional[dict] = Field(
+        None,
+        description="Optional field to capture any errors that occurred during the generation process.",
+    )
+    response: dict = Field(..., description="A generation object")
     generation_id: str = Field(
         ..., description="A unique identifier for the generation."
     )
@@ -94,12 +104,4 @@ class GenerationResponse(BaseModel):
     model: Model = Field(..., description="The model used for the generation.")
     metadata: Optional[Metadata] = Field(
         ..., description="Metadata object for the generation."
-    )
-    response: List[dict] = Field(..., description="A list of generation objects")
-    error: Optional[dict] = Field(
-        None,
-        description="Optional field to capture any errors that occurred during the generation process.",
-    )
-    status: int = Field(
-        ..., description="HTTP status code representing the outcome of the generation."
     )
