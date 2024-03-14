@@ -72,9 +72,6 @@ class CodeHandler:
             },
         )
 
-    def run(self, function_name, payload):
-        return self.lambda_client.invoke(function_name, payload)
-
 
 # def check_parameters(parameters: Optional[QueryParamsSchema], workbook: dict):
 #     request_parameters = parameters.model_dump()["parameters"] if parameters else {}
