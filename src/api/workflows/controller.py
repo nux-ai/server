@@ -9,7 +9,7 @@ from db_internal.model import PaginationParams
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("/", response_model=WorkflowSchema)
 async def create_workflow(
     request: Request,
     workflow_request: WorkflowCreateRequest = Body(...),
