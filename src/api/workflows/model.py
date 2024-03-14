@@ -5,7 +5,7 @@ from utilities.helpers import unique_name, generate_uuid
 
 
 class WorkflowSettings(BaseModel):
-    requirements: List[str] = Field(default_factory=list)
+    requirements: Optional[List[str]] = Field(default_factory=list)
     python_version: Optional[str] = "python3.10"
 
 
@@ -20,7 +20,9 @@ class WorkflowSchema(BaseModel):
 
 
 class WorkflowCreateRequest(BaseModel):
-    workflow_id: Optional[str] = Field(default_factory=lambda: generate_uuid())
+    workflow_id: Optional[str] = Field(
+        default_factory=lambda: generate_uuid(length=15, dashes=False)
+    )
     code_as_string: str
     metadata: Optional[dict] = {}
     settings: WorkflowSettings

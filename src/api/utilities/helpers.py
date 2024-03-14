@@ -34,8 +34,9 @@ def unique_name(exclude_list=[]):
 
 
 def generate_function_name(index_id, provider_id, function_name):
-    ix = index_id[-15:].replace("-", "")
-    pv = provider_id
+    # split the string at the first occurence of "ix-" and take the first 8 characters
+    ix = index_id.split("ix-", 1)[1][:8]
+    pv = provider_id[:6]
     fx = function_name
     return f"{ix}-{pv}-{fx}"
 
