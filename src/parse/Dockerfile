@@ -22,13 +22,16 @@ RUN apt-get update && \
 # Install pip for Python 3.10
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
 
-# Install supervisor
-RUN pip3 install supervisor
+# Install Poetry
+RUN pip3 install poetry
 
-# Now pip3 and python3 will point to the Python 3.10 versions
-COPY requirements.txt ./
-RUN pip3 install -r requirements.txt
-RUN playwright install
+# Copy only pyproject.toml and poetry.lock (if available) to cache dependencies installation
+COPY pyproject.toml poetry.lock* /usr/src/app/
+
+# Install dependencies from pyproject.toml using Poetry
+# Note: The `--no-root` option is used to prevent Poetry from installing the project package at this stage.
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-dev --no-interaction --no-ansi
 
 # Download the Apache Tika server jar
 RUN curl -O https://downloads.apache.org/tika/${TIKA_VERSION}/tika-server-standard-${TIKA_VERSION}.jar
