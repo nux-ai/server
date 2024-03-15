@@ -1,4 +1,6 @@
 from openai import OpenAI, NotFoundError
+from pydantic import BaseModel, Field
+
 import instructor
 from config import openai_key
 import json
@@ -59,13 +61,32 @@ class GPT:
 
         # Parse the JSON schema to generate Python code for the corresponding Pydantic model.
         result = parser.parse()
+        print("🚀 ~ result:", result)
         local_namespace = {}
 
         # Execute the generated Python code to define the Pydantic model in the local namespace.
         exec(result, globals(), local_namespace)
+        print("🚀 ~ local_namespace:", local_namespace)
 
-        # Retrieve the defined Pydantic model class from the local namespace.
-        model_class = local_namespace.get("Model")
+        # Initialize variable to hold the last BaseModel subclass found
+        last_model_class = None
+
+        # Iterate over generated pydantic models in local_namespace
+        for name, obj in local_namespace.items():
+            # Check if the object is a class and is a subclass of BaseModel (excluding BaseModel itself)
+            if (
+                isinstance(obj, type)
+                and issubclass(obj, BaseModel)
+                and obj is not BaseModel
+            ):
+                last_model_class = obj
+
+        # Now, last_model_class should hold the last defined Pydantic model class, if any
+        if last_model_class is None:
+            raise JSONSchemaParsingError("No Pydantic model class found")
+        else:
+            # Proceed with using model_class as needed
+            model_class = last_model_class
 
         # If the model class could not be retrieved, raise a JSONSchemaParsingError.
         if model_class is None:
