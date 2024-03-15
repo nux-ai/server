@@ -34,15 +34,20 @@ class GPT:
         return {}
 
     def _extract_response_format(self):
+        # Check if the generation request has a specified response format. If not, return None.
         if not self.generation_request.response_format:
             return None
 
+        # Convert the response format from a Python dictionary to a JSON string.
         json_schema = json.dumps(self.generation_request.response_format)
 
+        # Retrieve the data model types for Pydantic version 2, targeting Python 3.10.
         data_model_types = get_data_model_types(
             DataModelType.PydanticV2BaseModel,
             target_python_version=PythonVersion.PY_310,
         )
+
+        # Initialize a JsonSchemaParser with the JSON schema and the retrieved data model types.
         parser = JsonSchemaParser(
             json_schema,
             data_model_type=data_model_types.data_model,
@@ -51,14 +56,22 @@ class GPT:
             data_type_manager_type=data_model_types.data_type_manager,
             dump_resolve_reference_action=data_model_types.dump_resolve_reference_action,
         )
+
+        # Parse the JSON schema to generate Python code for the corresponding Pydantic model.
         result = parser.parse()
         local_namespace = {}
+
+        # Execute the generated Python code to define the Pydantic model in the local namespace.
         exec(result, globals(), local_namespace)
+
+        # Retrieve the defined Pydantic model class from the local namespace.
         model_class = local_namespace.get("Model")
 
+        # If the model class could not be retrieved, raise a JSONSchemaParsingError.
         if model_class is None:
             raise JSONSchemaParsingError(f"JSON Schema parsing failed")
 
+        # Return the Pydantic model class.
         return model_class
 
     def run(self):
