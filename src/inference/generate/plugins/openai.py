@@ -61,12 +61,10 @@ class GPT:
 
         # Parse the JSON schema to generate Python code for the corresponding Pydantic model.
         result = parser.parse()
-        print("🚀 ~ result:", result)
         local_namespace = {}
 
         # Execute the generated Python code to define the Pydantic model in the local namespace.
         exec(result, globals(), local_namespace)
-        print("🚀 ~ local_namespace:", local_namespace)
 
         # Initialize variable to hold the last BaseModel subclass found
         last_model_class = None
