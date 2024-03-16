@@ -4,12 +4,7 @@ from typing import Optional, Union, cast
 from auth.service import get_index_id
 from db_internal.model import PaginationParams
 
-from .model import (
-    CreateOrgRequest,
-    OrganizationBase,
-    TrustedOrgResponse,
-    SecretRequest,
-)
+from .model import CreateOrgRequest, TrustedOrgResponse, OrganizationUpdateRequest
 from .service import OrganizationSyncService
 from fastapi import Request, Response, status
 
@@ -22,22 +17,19 @@ def create_organization(request: CreateOrgRequest):
     return org_service.create_organization(email=request.email)
 
 
-# @router.get("/", response_model=Union[TrustedOrgResponse, OrganizationBase])
-# def get_organization(
-#     index_id: str = Depends(get_index_id), keys: Optional[bool] = None
-# ):
-#     org_service = OrganizationSyncService()
+@router.put("/", response_model=TrustedOrgResponse)
+def update_organization(
+    updates: OrganizationUpdateRequest, index_id: str = Depends(get_index_id)
+):
+    service = OrganizationSyncService()
+    updates_dict = updates.dict(exclude_unset=True)
+    return service.update_organization(index_id, updates_dict)
 
-#     try:
-#         if keys:
-#             # Call a different method when keys is provided
-#             org = org_service.get_by_index_id(index_id)
-#             return OrganizationBase.model_validate(org)
-#         else:
-#             org = org_service.get_for_frontend(index_id)
-#             return TrustedOrgResponse.model_validate(org)
-#     except Exception as e:
-#         raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/", response_model=TrustedOrgResponse)
+def get_organization(index_id: str = Depends(get_index_id)):
+    service = OrganizationSyncService()
+    return service.get_organization(index_id)
 
 
 # @router.post("/secrets")

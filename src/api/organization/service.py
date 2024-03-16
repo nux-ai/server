@@ -2,9 +2,10 @@ from fastapi import BackgroundTasks, HTTPException
 from pydantic import ValidationError
 
 from utilities.helpers import generate_api_key
-from utilities.encryption import Secret
+from utilities.encryption import SecretCipher
 
-from db_internal.service import sync_db, mongo_client
+from db_internal.service import sync_db, mongo_client, BaseSyncDBService
+from pymongo import ReturnDocument
 from fastapi import HTTPException
 from .model import (
     OrganizationBase,
@@ -56,6 +57,26 @@ class OrganizationSyncService:
 
         return org
 
+    def get_organization(self, index_id):
+        # Retrieve an organization object by its index_id.
+        response = self.sync_client.find_one({"indexes": index_id})
+
+        # Return None if no organization is found.
+        if not response:
+            raise HTTPException(status_code=400, detail="Organization not found")
+
+        return TrustedOrgResponse(**response)
+
+    def update_organization(self, index_id, updated_data):
+        # Find the organization by its ID
+        filters = {"indexes": index_id}
+
+        return self.sync_client.find_one_and_update(
+            filters,
+            {"$set": updated_data},
+            return_document=ReturnDocument.AFTER,
+        )
+
     # def delete_organization(self, org_id):
     #     # Find the organization by its ID
     #     org = self.sync_client.find_one({"org_id": org_id})
@@ -103,16 +124,15 @@ class OrganizationSyncService:
         # temp until we can handle multiple index_ids
         return obj["indexes"][0], obj
 
-    # def get_by_index_id(self, index_id):
-    #     # Retrieve an organization object by its index_id.
-    #     response = self.sync_client.find_one({"indexes": index_id})
+    def get_by_index_id(self, index_id):
+        # Retrieve an organization object by its index_id.
+        response = self.sync_client.find_one({"indexes": index_id})
 
-    #     # Return None if no organization is found.
-    #     if not response:
-    #         raise BadRequestError(detail="Organization not found", status_code=400)
+        # Return None if no organization is found.
+        if not response:
+            raise HTTPException(detail="Organization not found", status_code=400)
 
-    #     org = OrganizationBase(**response)
-    #     return org
+        return OrganizationBase(**response)
 
     # def get_for_frontend(self, index_id):
     #     # Retrieve an organization object by its index_id.
