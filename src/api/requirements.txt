@@ -39,3 +39,4 @@ beautifulsoup4==4.12.3
 simplejson==3.19.2
 magika==0.5.1
 haikunator==2.1.0
+unstructured==0.12.6

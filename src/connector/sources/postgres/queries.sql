@@ -20,5 +20,5 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE TRIGGER table_change_trigger
-AFTER INSERT ON ethan_test
+AFTER INSERT OR UPDATE OR DELETE ON ethan_test
 FOR EACH ROW EXECUTE FUNCTION notify_table_change();

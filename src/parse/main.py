@@ -14,10 +14,6 @@ from package.model import PackageData
 from package.service import PackageManager
 
 
-import tika
-
-tika.initVM()
-
 app = FastAPI()
 
 

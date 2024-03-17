@@ -19,7 +19,7 @@ RUN poetry config virtualenvs.create false \
 COPY . /usr/src/app
 
 # Make port 8003 available to the world outside this container
-EXPOSE 8003
+EXPOSE 8002
 
 # Run app.py when the container launches using Poetry
 CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--reload"]

@@ -35,6 +35,7 @@ class Text:
 
         async with httpx.AsyncClient() as client:
             response = await client.post(self.url, files=files)
+            print(response.text)
         return response.json()
 
     async def run(self):
@@ -55,9 +56,7 @@ class Text:
                 self.response_object["status"] = 500
 
         except Exception as e:
-            self.response_object["error"] = (
-                "Failed to call Parser, is the service running?"
-            )
+            self.response_object["error"] = f"Failed to call Parser: {e}"
             self.response_object["status"] = 500
 
         self.response_object["metadata"] = {
