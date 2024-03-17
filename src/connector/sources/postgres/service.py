@@ -7,6 +7,7 @@ import time
 from psycopg2 import sql
 
 from .model import PostgresConnection
+from utilities.transmit import Sender
 
 
 class PostgresService:
@@ -16,6 +17,10 @@ class PostgresService:
         self.password = connection_info.password
         self.host = connection_info.host
         self.port = connection_info.port
+        self.sender = Sender(
+            endpoint="https://localhost:8000/receive",
+            headers={"Authorization": f"Bearer {connection_info.nux_api_key}"},
+        )
         self.listeners = {}  # Dictionary to track listener threads
         self.stop_events = {}  # Track stop events for each thread
 
@@ -58,7 +63,7 @@ class PostgresService:
             $$ LANGUAGE plpgsql;
 
             CREATE TRIGGER nux_notify_trigger
-            AFTER INSERT ON {table}
+            AFTER INSERT OR UPDATE OR DELETE ON {table}
             FOR EACH ROW EXECUTE FUNCTION nux_notify_function();
         """
         ).format(table=sql.Identifier(table_name))
@@ -89,15 +94,15 @@ class PostgresService:
         self.cursor.close()
         self.connection.close()
 
-    # def stop_notifier(self, table_name):
-    #     if table_name in self.listeners:
-    #         logging.info(f"Stopping listener for {table_name}.")
-    #         self.stop_events[table_name].set()  # Signal the thread to stop
-    #         self.listeners[table_name].join()  # Wait for the thread to finish
-    #         del self.listeners[table_name]  # Remove the thread from the registry
-    #         del self.stop_events[table_name]  # Remove the event from the registry
-    #     else:
-    #         logging.warning(f"No active listener for {table_name} to stop.")
+    def stop_notifier(self, table_name):
+        if table_name in self.listeners:
+            print(f"Stopping listener for {table_name}.")
+            self.stop_events[table_name].set()  # Signal the thread to stop
+            self.listeners[table_name].join()  # Wait for the thread to finish
+            del self.listeners[table_name]  # Remove the thread from the registry
+            del self.stop_events[table_name]  # Remove the event from the registry
+        else:
+            print(f"No active listener for {table_name} to stop.")
 
     def invoke_notifier(self, table_name):
         print(f"Invoking notifier for {table_name}")
@@ -120,7 +125,9 @@ class PostgresService:
                     while conn.notifies:
                         notify = conn.notifies.pop(0)
                         payload = notify.payload
-                        print(f"Received notification: {payload}")
+                        print(f"Received notificatiomn, sending: {payload}")
+                        self.sender.send(payload)
+
                     time.sleep(1)
             finally:
                 cur.close()
