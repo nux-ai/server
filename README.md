@@ -1,4 +1,27 @@
-# Real-time data
+<p align="center">
+  <img height="60" src="https://nux.ai/static/img/brand/nux_logo_dark.png" alt="NUX Logo">
+</p>
+<p align="center">
+<strong><a href="https://docs.nux.ai/">Documentation</a> | <a href="https://www.nux.ai/newsletter-signup/">Email List</a>
+</strong>
+</p>
+
+<p align="center">
+    <a href="https://github.com/nux-ai/server/stargazers">
+        <img src="https://img.shields.io/github/stars/nux-ai/server.svg?style=flat&color=yellow" alt="Github stars"/>
+    </a>
+    <a href="https://github.com/nux-ai/server/issues">
+        <img src="https://img.shields.io/github/issues/nux-ai/server.svg?style=flat&color=success" alt="GitHub issues"/>
+    </a>
+    <a href="https://join.slack.com/t/nuxai/shared_invite/zt-2efp37o7q-FDyH3LFPkeOsc9Vi_Q6ZEA">
+        <img src="https://img.shields.io/badge/slack-join-green.svg?logo=slack" alt="Join Slack"/>
+    </a>
+</p>
+
+<h2 align="center">
+    <b>real-time multi-modal vector embedding. set and forget. 
+    </b>
+</h2>
 
 ## Overview
 
