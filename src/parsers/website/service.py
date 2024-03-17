@@ -19,12 +19,12 @@ class WebScraper:
         self.url = url
         self.maxDepth = maxDepth
         self.data = {
-            "Image": [],
-            "Video": [],
-            "Audio": [],
-            "PDF": [],
-            "HTML": [],
-            "Internal": [
+            "image": [],
+            "video": [],
+            "audio": [],
+            "pdf": [],
+            "html": [],
+            "internal": [
                 self.url,
             ],
         }
@@ -54,11 +54,11 @@ class WebScraper:
         if not bool(parsed.netloc) or not bool(parsed.scheme):
             return False
 
-        # Check if the same URL already exists in the Internal list
+        # Check if the same URL already exists in the internal list
         stripped_url = parsed.netloc + parsed.path
         stripped_url = stripped_url.lstrip("www.")  # remove www
         stripped_url = stripped_url.rstrip("/")  # remove backslash
-        if any(stripped_url in s for s in self.data["Internal"]):
+        if any(stripped_url in s for s in self.data["internal"]):
             return False
         return True
 
@@ -69,8 +69,8 @@ class WebScraper:
             if ".png" or ".gif" or ".jpg" in url:
                 if "http" not in url:
                     url = "{}{}".format(site, url)
-                if url not in self.data["Image"]:
-                    self.data["Image"].append(url)
+                if url not in self.data["image"]:
+                    self.data["image"].append(url)
 
     def getData(self, url, soup):
         def addType(href):
@@ -78,24 +78,24 @@ class WebScraper:
                 ".png" in href
                 or ".gif" in href
                 or ".jpg" in href
-                and href not in self.data["Image"]
+                and href not in self.data["image"]
             ):
-                self.data["Image"].append(href)
-            elif ".html" in href and href not in self.data["HTML"]:
-                self.data["HTML"].append(href)
-            elif ".pdf" in href and href not in self.data["PDF"]:
-                self.data["PDF"].append(href)
-            elif ".mp3" in href and href not in self.data["Audio"]:
-                self.data["Audio"].append(href)
+                self.data["image"].append(href)
+            elif ".html" in href and href not in self.data["html"]:
+                self.data["html"].append(href)
+            elif ".pdf" in href and href not in self.data["pdf"]:
+                self.data["pdf"].append(href)
+            elif ".mp3" in href and href not in self.data["audio"]:
+                self.data["audio"].append(href)
             elif (
                 ".mp4" in href
                 or ".mpeg" in href
                 or ".wov" in href
                 or ".avi" in href
                 or ".mkv" in href
-                and href not in self.data["Video"]
+                and href not in self.data["video"]
             ):
-                self.data["Video"].append(href)
+                self.data["video"].append(href)
 
         domainName = urlparse(url).netloc
         for tag in soup.findAll("a"):
@@ -109,8 +109,8 @@ class WebScraper:
             if not self.isValid(href):
                 continue
             addType(href)
-            if domainName in href and href not in self.data["Internal"]:
-                self.data["Internal"].append(href)
+            if domainName in href and href not in self.data["internal"]:
+                self.data["internal"].append(href)
 
     async def recursiveScrap(self, i):
         async def getPage(url):
@@ -141,13 +141,13 @@ class WebScraper:
 
         if i > self.maxDepth:
             return
-        res, soup = await getPage(self.data["Internal"][i])
+        res, soup = await getPage(self.data["internal"][i])
         if not res:
             try:
-                self.extractImageUrls(soup, self.data["Internal"][i])
+                self.extractImageUrls(soup, self.data["internal"][i])
             except:
                 pass
-            self.getData(self.data["Internal"][i], soup)
+            self.getData(self.data["internal"][i], soup)
         print(i)
         i += 1
         await self.recursiveScrap(i)
