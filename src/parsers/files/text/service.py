@@ -2,6 +2,8 @@ import aiohttp
 from unstructured.partition.api import partition_via_api
 from config import unstructured
 
+from _exceptions import InternalServerError
+
 
 class TextService:
     def __init__(self, file_stream, metadata):
@@ -23,16 +25,15 @@ class TextService:
                 self.chunks.append(e.to_dict())
 
             return {
+                "success": True,
                 "status": 200,
-                "message": "Success",
-                "data": self.chunks,
-            }
+                "error": None,
+                "response": self.chunks,
+            }, 200
         except Exception as e:
-            return {
-                "status": 500,
-                "message": f"An error occurred: {str(e)}",
-                "data": [],
-            }
+            error = {"message": str(e)}
+            raise InternalServerError(error)
+
 
 # class FileTextExtractor:
 #     def __init__(self, file):

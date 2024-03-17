@@ -12,12 +12,11 @@ from auth.service import get_index_id
 # Local application/library specific imports
 from listeners.controller import router as listener_router
 from organization.controller import router as organization_router
-from parse.controller import router as parse_router
+from parse.controller import router as parsers_router
 from workflows.controller import router as workflow_router
 from generate.controller import router as generate_router
 
-# from chunk.controller import router as chunk_router
-
+# from embed.controller import router as embed_router
 
 api_router = APIRouter()
 
@@ -49,11 +48,11 @@ api_router.include_router(
 
 # authenticated
 # fmt: off
-api_router.include_router(listener_router, prefix="/listeners", tags=["Listener"], dependencies=[Depends(get_index_id)])
-api_router.include_router(parse_router, prefix="/parse", tags=["Parse"], dependencies=[Depends(get_index_id)])
-api_router.include_router(workflow_router, prefix="/workflows", tags=["Workflow"], dependencies=[Depends(get_index_id)])
-api_router.include_router(generate_router, prefix="/generate", tags=["Generate"], dependencies=[Depends(get_index_id)])
-# api_router.include_router(chunk_router, prefix="/chunk", tags=["Chunk"], dependencies=[Depends(get_index_id)])
+api_router.include_router(listener_router, prefix="/listen", tags=["Listeners"], dependencies=[Depends(get_index_id)])
+api_router.include_router(parsers_router, prefix="/parse", tags=["Parsers"], dependencies=[Depends(get_index_id)])
+api_router.include_router(workflow_router, prefix="/workflows", tags=["Workflows"], dependencies=[Depends(get_index_id)])
+api_router.include_router(generate_router, prefix="/generate", tags=["Generaters"], dependencies=[Depends(get_index_id)])
+# api_router.include_router(embed_router, prefix="/embed", tags=["Embedders"], dependencies=[Depends(get_index_id)])
 
 
 # fmt: on
