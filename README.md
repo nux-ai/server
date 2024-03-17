@@ -117,10 +117,10 @@ from nuxai import NUX
 nux = NUX("INTERNAL-API-KEY")
 
 # add the db to your organization, it's encrypted don't worry
-nux.add_db(LISTENER_DB_CONFIG)
+collection_id = nux.add_db(LISTENER_DB_CONFIG)
 
 # now listen in on changes, that's it! 
-listener_id = nux.listen(listen_settings)
+listener_id = nux.listen(collection_id, listen_settings)f
 ```
 
 We can even poll for status of our listener:
@@ -128,7 +128,7 @@ We can even poll for status of our listener:
 ```python
 nux.listener.status(listener_id)
 
-{'ACTIVE': True, 'UPLOADED': 1, 'PROCESSING': 0, 'READY': 0, 'ERROR': 0}
+{'ACTIVE': True, 'PROCESSING': 0, 'READY': 0, 'ERROR': 0}
 ```
 
 
