@@ -25,7 +25,14 @@
 
 ## Overview
 
-NUX SDK is a cutting-edge solution designed to automate and streamline the handling of database changes, file processing, and data embedding. Today engineers must set up architecture to, track database changes, extract content, process and embed it, then insert back into their database. This doesn't move the needle in your business, so why focus on it?
+NUX automatically listens in on database changes processes files, and generates embeddings to send right back into your database.
+
+It removes the need of setting up architecture to track database changes, extracting content, processing and embedding it, then inserting back into your database. This stuff doesn't move the needle in your business, so why focus on it?
+
+### Integrations
+
+- [MongoDB Vector Search](https://www.mongodb.com/products/platform/atlas-vector-search)
+- [Supabase](https://supabase.com/vector)
 
 ## Why NUX?
 
@@ -43,7 +50,7 @@ NUX is structured into four main services, each designed to handle a specific pa
 
 - **API (Orchestrator)**: Coordinates the flow between services, ensuring smooth operation and handling failures gracefully.
 - **Listener**: Monitors the database for specified changes, triggering the process when changes are detected.
-- **Parser**: Downloads and parses the changed files, preparing them for processing.
+- **Parser**: Loads and parses the changed files, preparing them for processing.
 - **Embedder**: Processes the parsed data, generating embeddings that can then be integrated back into the database.
 
 These services are containerized and can be deployed on separate servers for optimal performance and scalability.
@@ -55,8 +62,8 @@ These services are containerized and can be deployed on separate servers for opt
 Clone the NUX repository and navigate to the SDK directory:
 
 ```bash
-git clone <NUX-repository-url>
-cd <NUX-sdk-directory>
+git clone git@github.com:nux-ai/server.git
+cd server
 ```
 
 First, build the Docker image:
@@ -94,6 +101,10 @@ listen_settings = {
     "content_field": "file_id"
 }
 
+```
+
+Now let's setup our listener
+```python
 # the schema you'd like the insert to adhere to
 class InsertSchema:
     file_id: str
@@ -120,14 +131,9 @@ nux.listener.status(listener_id)
 {'ACTIVE': True, 'UPLOADED': 1, 'PROCESSING': 0, 'READY': 0, 'ERROR': 0}
 ```
 
-## Contributing
 
-Contributions are welcome! Fork the repository, add your feature or bug fix, and submit a pull request.
+#### Are we missing anything?
 
-## License
+- Email: ethan@nux.ai
+- Meeting: https://nux.ai/contact
 
-NUX SDK is licensed under the MIT License.
-
-## Conclusion
-
-NUX SDK revolutionizes how businesses interact with their databases, automating the monitoring, processing, and embedding of data. This automation not only alleviates manual labor but also significantly enhances data processing efficiency and reliability. By deploying each service in its own Docker container, NUX ensures scalability and flexibility, adapting to your business's growing needs.

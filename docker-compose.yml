@@ -15,12 +15,12 @@ services:
 
   parsers:
     build:
-      context: ./src/parse
+      context: ./src/parsers
       dockerfile: Dockerfile
     image: ghcr.io/nux-ai/nux-server-parse:latest
 
-  listeners:
+  connectors:
     build:
-      context: ./src/listen
+      context: ./src/connectors
       dockerfile: Dockerfile
-    image: ghcr.io/nux-ai/nux-listener-listen:latest
+    image: ghcr.io/nux-ai/nux-server-connector:latest
