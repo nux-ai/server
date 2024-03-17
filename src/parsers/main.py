@@ -5,7 +5,7 @@ from typing import Optional, Dict, Any
 import uvicorn
 
 from files.model import FileData
-from files.service import file_orchestrator
+from files.service import FileHandler
 
 from website.service import WebScraper
 from website.model import WebsiteData
@@ -32,8 +32,9 @@ class ApiResponse(BaseModel):
 
 @app.post("/file")
 async def process_file(file: FileData):
-    response = await file_orchestrator(file.file_url)
-    return response
+    file_handler = FileHandler(file.file_url)
+    response, status_code = await file_handler.parse_file()
+    return JSONResponse(content=response, status_code=status_code)
 
 
 @app.post("/website")

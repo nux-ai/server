@@ -33,15 +33,17 @@ class PackageManager:
 
             self.cleanup(function_path, zip_path)
             return {
-                "status": "ok",
-                "message": "Package creation and upload was successful.",
-                "data": s3_path,
+                "success": True,
+                "status": 200,
+                "error": None,
+                "response": s3_path,
             }, 200
         except Exception as e:
             return {
-                "status": "error",
-                "message": f"Error during package creation and upload: {e}",
-                "data": None,
+                "success": False,
+                "status": 500,
+                "error": f"Error during package creation and upload: {e}",
+                "response": None,
             }, 500
 
     def create_folder(self, function_name, python_version):

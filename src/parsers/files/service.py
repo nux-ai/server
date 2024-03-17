@@ -2,16 +2,11 @@ import cgi
 import httpx
 from io import BytesIO
 from magika import Magika
-from fastapi import HTTPException
+import time
 
 from .utils import generate_filename_from_url, get_filename_from_cd
-
 from .text.service import TextService
-
-# from image.service import ImageService
-# from audio.service import AudioService
-# from video.service import VideoService
-
+from _exceptions import InternalServerError, NotFoundError, BadRequestError
 
 files = {
     "text": ["pdf", "docx", "txt", "md", "html", "xml"],
@@ -19,11 +14,6 @@ files = {
     "audio": ["mp3", "wav", "ogg", "flac", "m4a", "wma", "aac"],
     "video": ["mp4", "mkv", "webm", "avi", "mov", "wmv", "flv"],
 }
-
-
-async def file_orchestrator(file_url):
-    file_handler = FileHandler(file_url)
-    return await file_handler.parse_file()
 
 
 class FileHandler:
@@ -38,31 +28,25 @@ class FileHandler:
                     filename = get_filename_from_cd(
                         response.headers.get("content-disposition")
                     )
-                    #
                     if not filename:
                         filename = generate_filename_from_url(self.file_url)
                     else:
                         raise ValueError("Filename not found")
                     return response.content, filename
                 else:
-                    raise HTTPException(
-                        status_code=400,
-                        detail=f"Error downloading file: {response.status_code}",
+                    raise BadRequestError(
+                        error={
+                            "message": f"Error downloading file: {response.status_code}"
+                        }
                     )
 
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error downloading file: {e}")
+            raise InternalServerError(error={"message": f"Error downloading file: {e}"})
 
     def detect_filetype(self, contents):
         try:
             m = Magika()
             res = m.identify_bytes(contents)
-            # {
-            #     "label": "pdf",
-            #     "description": "PDF document",
-            #     "mime_type": "application/pdf",
-            #     "group": "document"
-            # }
             data = {
                 "label": res.output.ct_label,
                 "description": res.output.description,
@@ -71,7 +55,9 @@ class FileHandler:
             }
             return data
         except Exception as e:
-            raise ValueError("Error occurred while detecting filetype") from e
+            raise InternalServerError(
+                error={"message": "Error occurred while detecting filetype"}
+            )
 
     async def parse_file(self):
         # Download file into memory
@@ -82,8 +68,10 @@ class FileHandler:
         metadata["filename"] = filename
 
         if metadata["label"] in files["text"]:
+            start_time = time.time() * 1000
+
             text_service = TextService(stream, metadata)
             return await text_service.run()
 
         else:
-            raise ValueError("File type not supported")
+            raise BadRequestError(error={"message": "File type not supported"})
