@@ -9,3 +9,4 @@ class PostgresConnection(BaseModel):
     port: Optional[int] = 5432
     user: str
     password: str
+    nux_api_key: str

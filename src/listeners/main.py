@@ -12,16 +12,17 @@ from sources.postgres.model import PostgresConnection
 app = FastAPI()
 
 
-@app.post("/postgres/setup")
+# @app.post("/postgres/setup")
+# async def setup_notify(connection_info: PostgresConnection):
+#     pg = PostgresService(connection_info)
+#     pg.create_table(connection_info.table_name)
+#     return pg.invoke_notifier(connection_info.table_name)
+
+
+@app.post("/postgres/start")
 async def setup_notify(connection_info: PostgresConnection):
     pg = PostgresService(connection_info)
-    pg.create_notifier(connection_info.table_name)
-    return pg.invoke_notifier(connection_info.table_name)
-
-
-@app.get("/healthcheck")
-async def healthcheck():
-    return {"status": "ok"}
+    pg.setup_notifier_for_table(connection_info.table_name)
 
 
 if __name__ == "__main__":

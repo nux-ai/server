@@ -1,29 +1,25 @@
-import aiohttp
-import asyncio
+import httpx
+from queue import Queue
+from threading import Thread
 
 
 class Sender:
     def __init__(self, endpoint, headers=None, max_pending=100):
         self.endpoint = endpoint
         self.headers = headers or {}
-        self.queue = asyncio.Queue(max_pending)
-        self.task = asyncio.create_task(self._worker())
+        self.queue = Queue(max_pending)
+        self.thread = Thread(target=self._worker, daemon=True)
+        self.thread.start()
 
-    async def send(self, payload):
-        await self.queue.put(payload)
+    def send(self, payload):
+        self.queue.put(payload)
 
-    async def _worker(self):
-        async with aiohttp.ClientSession() as session:
+    def _worker(self):
+        with httpx.Client() as client:
             while True:
-                payload = await self.queue.get()
-                async with session.post(
+                payload = self.queue.get()
+                response = client.post(
                     self.endpoint, json=payload, headers=self.headers
-                ) as response:
-                    print(await response.text())
+                )
+                print(response.text)
                 self.queue.task_done()
-
-
-# Usage
-headers = {"Authorization": "Bearer your_token"}
-sender = Sender("http://example.com/api", headers=headers)
-asyncio.run(sender.send({"key": "value"}))

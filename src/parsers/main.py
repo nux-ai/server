@@ -1,8 +1,9 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 import uvicorn
+import json
 
 from files.model import FileData
 from files.service import FileHandler
@@ -31,10 +32,14 @@ class ApiResponse(BaseModel):
 
 
 @app.post("/file")
-async def process_file(file: FileData):
-    file_handler = FileHandler(file.file_url)
-    response, status_code = await file_handler.parse_file()
-    return JSONResponse(content=response, status_code=status_code)
+async def process_file(request: Request):
+    headers = request.headers
+    body = await request.body()
+    print(f"Headers: {headers}")
+    print(json.loads(body))
+    # file_handler = FileHandler(file.file_url)
+    # response, status_code = await file_handler.parse_file()
+    # return JSONResponse(content=response, status_code=status_code)
 
 
 @app.post("/website")
