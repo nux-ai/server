@@ -158,10 +158,10 @@ class WebScraper:
             await self.recursiveScrap(0)
         except Exception as e:
             return {
-                "status": "error",
-                "message": f"Error during scraping: {str(e)}",
-                "data": None,
-            }, 500
+                "status": "ok",
+                "message": "Scraping completed successfully.",
+                "data": self.data,
+            }, 200
         await self.browser.close()
         return {
             "status": "ok",

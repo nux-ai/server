@@ -9,3 +9,9 @@ aws = {
     "aws_secret_key": os.getenv("AWS_SECRET_KEY"),
     "region": os.getenv("AWS_REGION"),
 }
+
+
+unstructured = {
+    "api_key": os.getenv("UNSTRUCTURED_API_KEY"),
+    "url": os.getenv("UNSTRUCTURED_URL"),
+}

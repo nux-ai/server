@@ -1,11 +1,11 @@
-from fastapi import FastAPI, HTTPException, UploadFile
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 import uvicorn
 
 from files.model import FileData
-from files.service import FileTextExtractor
+from files.service import file_orchestrator
 
 from website.service import WebScraper
 from website.model import WebsiteData
@@ -15,6 +15,8 @@ from package.service import PackageManager
 
 
 app = FastAPI()
+
+# router = FastAPI(prefix="/process")
 
 
 class ResponseData(BaseModel):
@@ -28,21 +30,20 @@ class ApiResponse(BaseModel):
     data: Optional[ResponseData] = Field(None, description="Data of the response")
 
 
-@app.post("/process/file", response_model=ApiResponse)
-async def process_file(file: UploadFile):
-    extractor = FileTextExtractor(file=file)
-    response, status_code = await extractor.extract_text()
-    return JSONResponse(content=response, status_code=status_code)
+@app.post("/file")
+async def process_file(file: FileData):
+    response = await file_orchestrator(file.file_url)
+    return response
 
 
-@app.post("/process/website")
+@app.post("/website")
 async def process_website(data: WebsiteData):
     scraper = WebScraper(data.website, data.max_depth)
     response, status_code = await scraper.scrapeData()
     return JSONResponse(content=response, status_code=status_code)
 
 
-@app.post("/process/package", response_model=ApiResponse)
+@app.post("/package", response_model=ApiResponse)
 async def process_request(data: PackageData):
     processor = PackageManager()
     response, status_code = await processor.process(data.model_dump())
