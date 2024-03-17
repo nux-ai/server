@@ -25,7 +25,7 @@
 
 ## Overview
 
-NUX SDK is a cutting-edge solution designed to automate and streamline the handling of database changes, file processing, and data embedding. In the business-as-usual (BAU) scenario, tracking database changes, extracting content, processing it, and then integrating the processed data back into the database involves a considerable amount of manual effort and coordination. This not only slows down operations but also increases the risk of errors. NUX SDK addresses these challenges by offering an automated, scalable, and efficient way to manage these processes.
+NUX SDK is a cutting-edge solution designed to automate and streamline the handling of database changes, file processing, and data embedding. Today engineers must set up architecture to, track database changes, extract content, process and embed it, then insert back into their database. This doesn't move the needle in your business, so why focus on it?
 
 ## Why NUX?
 
@@ -59,10 +59,16 @@ git clone <NUX-repository-url>
 cd <NUX-sdk-directory>
 ```
 
-Install the required dependencies:
+First, build the Docker image:
 
 ```bash
-pip install -r requirements.txt
+docker build -t my-app .
+```
+
+Then, run the application using Docker Compose:
+
+```bash
+docker-compose up
 ```
 
 ### Configuration and Usage
@@ -79,22 +85,40 @@ LISTENER_DB_CONFIG = {
     "port": 5432
 }
 
+listen_settings = {
+    "table_name": "my_table_name"
+    "filters": {
+        "status": "processing"
+    },
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "content_field": "file_id"
+}
+
+# the schema you'd like the insert to adhere to
 class InsertSchema:
     file_id: str
     embedding: list
     contents: str
 
-# Example: Starting the Listener Service
-from nux.listener import listen
-listen("your_table_name", LISTENER_DB_CONFIG)
+from nuxai import NUX
 
-# API Service Invocation
-# Example: Triggering the Parser and Embedder Services
-from nux.api import trigger_services
-trigger_services(file_url="http://example.com/yourfile.pdf", file_id="1234")
+# add your internal key (or cloud if you're using our managed service)
+nux = NUX("INTERNAL-API-KEY")
+
+# add the db to your organization, it's encrypted don't worry
+nux.add_db(LISTENER_DB_CONFIG)
+
+# now listen in on changes, that's it! 
+listener_id = nux.listen(listen_settings)
 ```
 
-This fake code demonstrates how you might configure and use NUX SDK services. Replace placeholders with your actual data.
+We can even poll for status of our listener:
+
+```python
+nux.listener.status(listener_id)
+
+{'ACTIVE': True, 'UPLOADED': 1, 'PROCESSING': 0, 'READY': 0, 'ERROR': 0}
+```
 
 ## Contributing
 
