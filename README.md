@@ -25,24 +25,14 @@
 
 ## Overview
 
-NUX automatically listens in on database changes processes files, and generates embeddings to send right back into your database.
+NUX automatically listens in on database changes, processes your files, and generates embeddings to send right back into your database.
 
-It removes the need of setting up architecture to track database changes, extracting content, processing and embedding it, then inserting back into your database. This stuff doesn't move the needle in your business, so why focus on it?
+It removes the need of setting up architecture to track database changes, extracting content, processing and embedding it. This stuff doesn't move the needle in your business, so why focus on it?
 
 ### Integrations
 
 - [MongoDB Vector Search](https://www.mongodb.com/products/platform/atlas-vector-search)
 - [Supabase](https://supabase.com/vector)
-
-## Why NUX?
-
-The need for NUX arises from the pain points experienced by businesses in managing database changes and processing data:
-
-- **Manual Monitoring and Processing**: Manually monitoring for database changes and processing data is time-consuming and prone to error, affecting efficiency and reliability.
-- **Scalability Issues**: Handling large volumes of data and spikes in database changes can be challenging without an automated, scalable system.
-- **Integration Complexity**: Integrating processed data back into databases often requires custom solutions, complicating the overall data management strategy.
-
-NUX automates these processes, providing a seamless, scalable solution that operates across four independent services, each running in its own Docker container. This architecture allows for independent scaling and ensures that a bottleneck in one service doesn't affect the others.
 
 ## Services Architecture
 
@@ -50,7 +40,7 @@ NUX is structured into four main services, each designed to handle a specific pa
 
 - **API (Orchestrator)**: Coordinates the flow between services, ensuring smooth operation and handling failures gracefully.
 - **Listener**: Monitors the database for specified changes, triggering the process when changes are detected.
-- **Parser**: Loads and parses the changed files, preparing them for processing.
+- **Parser**: Loads and parses the changed files, preparing them for processing (supports image, video audio and text)
 - **Embedder**: Processes the parsed data, generating embeddings that can then be integrated back into the database.
 
 These services are containerized and can be deployed on separate servers for optimal performance and scalability.
