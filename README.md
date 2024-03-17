@@ -19,7 +19,7 @@
 </p>
 
 <h2 align="center">
-    <b>real-time multi-modal vector embedding. set and forget. 
+    <b>real-time multi-modal vector embedding pipeline. set and forget. 
     </b>
 </h2>
 
