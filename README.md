@@ -74,23 +74,25 @@ Configure each service with your environment's specifics. Here's an illustrative
 
 ```python
 # Listener Service Configuration
-LISTENER_DB_CONFIG = {
-    "dbname": "your_db_name",
-    "user": "your_db_user",
-    "password": "your_db_password",
-    "host": "your_db_host",
-    "port": 5432
-}
 
 listen_settings = {
+    "connection": {
+        "engine": "mongodb",
+        "dbname": "your_db_name",
+        "user": "your_db_user",
+        "password": "your_db_password",
+        "host": "your_db_host",
+        "port": 5432
+    },
     "table_name": "my_table_name"
     "filters": {
         "status": "processing"
     },
-    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
-    "content_field": "file_id"
+    "embedding": {
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "field": "file_id"
+    }
 }
-
 ```
 
 Now let's setup our listener

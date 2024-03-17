@@ -47,3 +47,11 @@ jobs:
         file: ./src/parse/Dockerfile
         push: true
         tags: ghcr.io/${{ github.repository_owner }}/nux-server-parse:latest
+
+    - name: Build and push Listener Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: src/parse
+        file: ./src/listen/Dockerfile
+        push: true
+        tags: ghcr.io/${{ github.repository_owner }}/nux-server-listener:latest

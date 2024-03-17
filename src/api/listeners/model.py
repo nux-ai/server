@@ -9,6 +9,12 @@ class ListenerSettings(BaseModel):
     python_version: Optional[str] = "python3.10"
 
 
+class ListenerStatus(BaseModel):
+    PROCESSING: int = 0
+    COMPLETED: int = 0
+    ERROR: int = 0
+
+
 class ListenerSchema(BaseModel):
     index_id: str
     created_at: datetime
@@ -17,6 +23,7 @@ class ListenerSchema(BaseModel):
     listener_name: str
     metadata: dict
     settings: ListenerSettings
+    status: ListenerStatus
 
 
 class ProviderInformation(BaseModel):
