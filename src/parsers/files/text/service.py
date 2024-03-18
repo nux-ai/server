@@ -40,7 +40,7 @@ class TextService:
                 response_obj["text"] = self._clean(response_obj["text"])
                 self.chunks.append(response_obj)
 
-            return create_json_response(True, 200, "", self.chunks)
+            return create_json_response(True, 200, None, self.chunks)
         except Exception as e:
             error = {"message": str(e)}
             raise InternalServerError(error)

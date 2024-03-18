@@ -33,8 +33,7 @@ class ApiResponse(BaseModel):
 @app.post("/file")
 async def process_file(file: FileData):
     file_handler = FileHandler(file.file_url)
-    response, status_code = await file_handler.parse_file()
-    return JSONResponse(content=response, status_code=status_code)
+    return await file_handler.parse_file()
 
 
 @app.post("/website")

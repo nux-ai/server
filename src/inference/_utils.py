@@ -28,3 +28,7 @@ def create_json_response(
         },
         status_code=status,
     )
+
+
+def create_success_response(response: Optional[str]):
+    return create_json_response(True, 200, None, response)
