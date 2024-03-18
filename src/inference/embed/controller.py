@@ -3,8 +3,8 @@ from fastapi import APIRouter  # Import APIRouter instead of FastAPI
 from .model import (
     EmbeddingRequest,
     EmbeddingResponse,
-    DimensionRequest,
-    DimensionsResponse,
+    ConfigsRequest,
+    ConfigsResponse,
 )
 
 from embed.service import EmbeddingHandler
@@ -12,10 +12,10 @@ from embed.service import EmbeddingHandler
 router = APIRouter()
 
 
-@router.get("/dimensions", response_model=DimensionsResponse)
-async def get_dimensions(data: DimensionRequest):
+@router.get("/configs", response_model=ConfigsResponse)
+async def get_dimensions(data: ConfigsRequest):
     embedding_handler = EmbeddingHandler(data.modality, data.model)
-    return embedding_handler.get_dimensions()
+    return embedding_handler.get_configs()
 
 
 @router.get("/", response_model=EmbeddingResponse)

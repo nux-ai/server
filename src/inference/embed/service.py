@@ -19,11 +19,13 @@ class EmbeddingHandler:
             "elapsed_time": (time.time() * 1000) - start_time,
         }
 
-    def get_dimensions(self):
+    def get_configs(self):
         start_time = time.time() * 1000
         dimensions = self.service.get_dimensions()
+        token_size = self.service.get_token_size()
         return {
             "dimensions": dimensions,
+            "token_size": token_size,
             "elapsed_time": (time.time() * 1000) - start_time,
         }
 
@@ -59,3 +61,6 @@ class TextEmbeddingService:
 
     def get_dimensions(self):
         return self.model.config.hidden_size
+
+    def get_token_size(self):
+        return self.tokenizer.model_max_length
