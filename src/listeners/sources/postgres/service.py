@@ -4,6 +4,8 @@ from psycopg2 import sql
 from threading import Thread, Event
 import time
 
+from config import api_service_url
+
 from .model import PostgresConnection
 from utilities.transmit import Sender
 
@@ -112,6 +114,8 @@ class Notifier:
                     notify = conn.notifies.pop(0)
                     self.sender.send(notify.payload)
                 time.sleep(1)
+        except Exception as e:
+            self.sender.send(f"Listener stopped: {e}")
         finally:
             cur.close()
             conn.close()
@@ -132,7 +136,7 @@ class PostgresService:
         self.db_manager = DatabaseManager(connection_info)
         self.notification_manager = NotificationManager(self.db_manager)
         self.sender = Sender(
-            endpoint="http://localhost:8001/file",
+            endpoint=api_service_url + "/listeners/postgres",
             headers={"Authorization": f"Bearer {connection_info.nux_api_key}"},
         )
 
