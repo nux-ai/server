@@ -1,5 +1,5 @@
 import aiohttp
-from unstructured.partition.api import partition_via_api
+from unstructured.partition.auto import partition
 from config import unstructured
 
 from _exceptions import InternalServerError
@@ -14,12 +14,14 @@ class TextService:
 
     async def run(self):
         try:
-            elements = partition_via_api(
+            elements = partition(
                 file=self.file_stream,
                 api_key=self.api_key,
-                strategy="auto",
+                chunking_strategy="basic",
                 pdf_infer_table_structure="true",
                 metadata_filename=self.metadata["filename"],
+                # strategy="hi_res",
+                # hi_res_model_name="yolox_quantized",
             )
             for e in elements:
                 self.chunks.append(e.to_dict())
