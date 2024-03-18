@@ -1,30 +1,45 @@
 import aiohttp
-from unstructured.partition.auto import partition
-from config import unstructured
+
+from unstructured.partition.pdf import partition_pdf
+from unstructured.cleaners.core import clean
+from unstructured.chunking.basic import chunk_elements
+
 
 from _exceptions import InternalServerError
 
 
 class TextService:
     def __init__(self, file_stream, metadata):
-        self.api_key = unstructured["api_key"]
         self.metadata = metadata
         self.file_stream = file_stream
         self.chunks = []
 
-    async def run(self):
+    def _clean(self, text):
+        return clean(text, bullets=True, extra_whitespace=True, dashes=True)
+
+    def _chunk(self, elements, chunk_size=500, overlap_percent=15):
+        overlap_subset = int(chunk_size * (overlap_percent / 100))
+        return chunk_elements(
+            elements,
+            max_characters=chunk_size,
+            overlap=overlap_subset,
+        )
+
+    async def run_pdf(self):
         try:
-            elements = partition(
+            elements = partition_pdf(
                 file=self.file_stream,
-                api_key=self.api_key,
-                chunking_strategy="basic",
-                pdf_infer_table_structure="true",
+                infer_table_structure="true",
                 metadata_filename=self.metadata["filename"],
-                # strategy="hi_res",
-                # hi_res_model_name="yolox_quantized",
+                # skip_infer_table_types=[],
+                strategy="hi_res",
+                hi_res_model_name="detectron2_onnx",
             )
-            for e in elements:
-                self.chunks.append(e.to_dict())
+            chunks = self._chunk(elements)
+            for c in chunks:
+                response_obj = c.to_dict()
+                response_obj["text"] = self._clean(response_obj["text"])
+                self.chunks.append(response_obj)
 
             return {
                 "success": True,
