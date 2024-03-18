@@ -77,32 +77,6 @@ class OrganizationSyncService:
             return_document=ReturnDocument.AFTER,
         )
 
-    # def delete_organization(self, org_id):
-    #     # Find the organization by its ID
-    #     org = self.sync_client.find_one({"org_id": org_id})
-
-    #     # Raise an error if the organization is not found
-    #     if not org:
-    #         raise BadRequestError("Organization not found", status_code=400)
-
-    #     # Delete the organization from the database
-    #     self.sync_client.delete_one({"_id": org["_id"]})
-
-    #     return True
-
-    # def delete_organization_of_user(self, user_email):
-    #     # Find the organization by its ID
-    #     org = self.sync_client.find_one({"users.email": user_email})
-
-    #     # Raise an error if the organization is not found
-    #     if not org:
-    #         raise BadRequestError("Organization not found", status_code=400)
-
-    #     # Delete the organization from the database
-    #     self.sync_client.delete_one({"_id": org["_id"]})
-
-    #     return True
-
     def get_by_api_key(self, api_key):
         obj = self.sync_client.find_one({"api_keys.key": api_key})
 
@@ -133,49 +107,3 @@ class OrganizationSyncService:
             raise HTTPException(detail="Organization not found", status_code=400)
 
         return OrganizationBase(**response)
-
-    # def get_for_frontend(self, index_id):
-    #     # Retrieve an organization object by its index_id.
-    #     response = self.sync_client.find_one({"indexes": index_id})
-
-    #     # Return None if no organization is found.
-    #     if not response:
-    #         raise BadRequestError(detail="Organization not found", status_code=400)
-
-    #     return TrustedOrgResponse(**response)
-
-    # def add_secret(self, index_id, secret_name, secret_value):
-    #     encrypt = Secret()
-    #     organization = self.get_by_index_id(index_id).dict()
-
-    #     encrypted_secret = encrypt.encrypt_string(secret_value)
-
-    #     secret = {"name": secret_name, "value": encrypted_secret}
-
-    #     self.sync_client.update_one(
-    #         {"org_id": organization["org_id"]}, {"$push": {"secrets": secret}}
-    #     )
-
-    # def delete_secret(self, index_id, secret_name):
-    #     organization = self.get_by_index_id(index_id).dict()
-
-    #     self.sync_client.update_one(
-    #         {"org_id": organization["org_id"]},
-    #         {"$pull": {"secrets": {"name": secret_name}}},
-    #     )
-
-    # def get_secret(self, index_id, secret_name):
-    #     encrypt = Secret()
-    #     organization = self.get_by_index_id(index_id).model_dump()
-
-    #     # Find the organization with the given org_id and secret name
-    #     result = self.sync_client.find_one(
-    #         {"org_id": organization["org_id"], "secrets.name": secret_name},
-    #         {"secrets.$": 1},
-    #     )
-
-    #     if result is not None and "secrets" in result and len(result["secrets"]) > 0:
-    #         secret_value = result["secrets"][0]["value"]
-    #         return encrypt.decrypt_string(secret_value)
-    #     else:
-    #         raise BadRequestError("Secret not found")

@@ -13,14 +13,14 @@ services:
       dockerfile: Dockerfile
     image: ghcr.io/nux-ai/nux-server-inference:latest
 
+  connectors:
+    build:
+      context: ./src/listeners
+      dockerfile: Dockerfile
+    image: ghcr.io/nux-ai/nux-server-listeners:latest
+
   parsers:
     build:
       context: ./src/parsers
       dockerfile: Dockerfile
-    image: ghcr.io/nux-ai/nux-server-parse:latest
-
-  connectors:
-    build:
-      context: ./src/connectors
-      dockerfile: Dockerfile
-    image: ghcr.io/nux-ai/nux-server-connector:latest
+    image: ghcr.io/nux-ai/nux-server-parsers:latest

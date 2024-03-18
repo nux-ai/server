@@ -15,7 +15,7 @@ openai_key = os.getenv("OPENAI_KEY")
 
 # containers
 parser_url = os.getenv("PARSER_CONTAINER_URL")
-storage_url = os.getenv("STORAGE_CONTAINER_URL")
+listener_url = os.getenv("LISTENER_CONTAINER_URL")
 inference_url = os.getenv("INFERENCE_CONTAINER_URL")
 
 # cloud

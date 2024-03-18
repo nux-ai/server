@@ -40,5 +40,6 @@ def get_index_id(
         raise HTTPException(status_code=400, detail="Index ID not found")
 
     request.index_id = index_id
+    request.api_key = api_key
 
     return index_id

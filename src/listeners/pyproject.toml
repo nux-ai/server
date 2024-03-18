@@ -12,10 +12,6 @@ fastapi = "^0.110.0"
 psycopg2 = "^2.9.9"
 psycopg2-binary = "^2.9.9"
 pypgoutput = "^0.0.3"
-supabase = "^2.4.0"
-
-[tool.poetry.group.dev.dependencies]
-airbyte = "^0.7.5"
 
 [build-system]
 requires = ["poetry-core"]
