@@ -4,7 +4,7 @@ from unstructured.partition.pdf import partition_pdf
 from unstructured.cleaners.core import clean
 from unstructured.chunking.basic import chunk_elements
 
-
+from _utils import create_json_response
 from _exceptions import InternalServerError
 
 
@@ -29,11 +29,10 @@ class TextService:
         try:
             elements = partition_pdf(
                 file=self.file_stream,
-                infer_table_structure="true",
+                infer_table_structure=False,
                 metadata_filename=self.metadata["filename"],
-                # skip_infer_table_types=[],
-                strategy="hi_res",
-                hi_res_model_name="detectron2_onnx",
+                # strategy="hi_res",
+                # hi_res_model_name="detectron2_onnx",
             )
             chunks = self._chunk(elements)
             for c in chunks:
@@ -41,12 +40,7 @@ class TextService:
                 response_obj["text"] = self._clean(response_obj["text"])
                 self.chunks.append(response_obj)
 
-            return {
-                "success": True,
-                "status": 200,
-                "error": None,
-                "response": self.chunks,
-            }, 200
+            return create_json_response(True, 200, "", self.chunks)
         except Exception as e:
             error = {"message": str(e)}
             raise InternalServerError(error)

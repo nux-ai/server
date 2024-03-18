@@ -6,7 +6,9 @@ import time
 
 from .utils import generate_filename_from_url, get_filename_from_cd
 from .text.service import TextService
+
 from _exceptions import InternalServerError, NotFoundError, BadRequestError
+from _utils import create_json_response
 
 files = {
     "text": ["pdf", "docx", "txt", "md", "html", "xml"],
@@ -47,6 +49,12 @@ class FileHandler:
         try:
             m = Magika()
             res = m.identify_bytes(contents)
+            # {
+            #     "label": "pdf",
+            #     "description": "PDF document",
+            #     "mime_type": "application/pdf",
+            #     "group": "document",
+            # }
             data = {
                 "label": res.output.ct_label,
                 "description": res.output.description,
@@ -63,15 +71,15 @@ class FileHandler:
         # Download file into memory
         contents, filename = await self.download_into_memory()
         stream = BytesIO(contents)
+
         # Detect file type
         metadata = self.detect_filetype(stream.getvalue())
         metadata["filename"] = filename
+        metadata["start_time"] = time.time() * 1000
+
+        text_service = TextService(stream, metadata)
 
         if metadata["label"] == "pdf":
-            start_time = time.time() * 1000
-
-            text_service = TextService(stream, metadata)
             return await text_service.run_pdf()
-
         else:
             raise BadRequestError(error={"message": "File type not supported"})

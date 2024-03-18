@@ -10,9 +10,15 @@ class Modality(Enum):
     TEXT = "text"
 
 
-class DimensionRequest(BaseModel):
+class ConfigsRequest(BaseModel):
     modality: Optional[Modality] = "text"
     model: Optional[str] = "sentence-transformers/all-MiniLM-L6-v2"
+
+
+class ConfigsResponse(BaseModel):
+    dimensions: int
+    elapsed_time: float
+    token_size: int
 
 
 class EmbeddingRequest(BaseModel):
@@ -23,9 +29,4 @@ class EmbeddingRequest(BaseModel):
 
 class EmbeddingResponse(BaseModel):
     embedding: List[float]
-    elapsed_time: float
-
-
-class DimensionsResponse(BaseModel):
-    dimensions: int
     elapsed_time: float
