@@ -67,11 +67,11 @@ class FileHandler:
         metadata = self.detect_filetype(stream.getvalue())
         metadata["filename"] = filename
 
-        if metadata["label"] in files["text"]:
+        if metadata["label"] == "pdf":
             start_time = time.time() * 1000
 
             text_service = TextService(stream, metadata)
-            return await text_service.run()
+            return await text_service.run_pdf()
 
         else:
             raise BadRequestError(error={"message": "File type not supported"})
