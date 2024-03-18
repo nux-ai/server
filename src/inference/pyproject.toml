@@ -16,6 +16,10 @@ python-dotenv = "^1.0.1"
 datamodel-code-generator = "^0.25.4"
 transformers = "^4.38.2"
 torch = "^2.2.1"
+pillow = "^10.2.0"
+librosa = "^0.10.1"
+torchvision = "^0.17.1"
+opencv-python = "^4.9.0.80"
 
 
 [build-system]

@@ -5,18 +5,26 @@ import time
 
 from _utils import create_success_response
 
-from modalities.image import ImageEmbeddingService
-from modalities.text import TextEmbeddingService
+from .modalities.image import ImageEmbeddingService
+from .modalities.text import TextEmbeddingService
+from .modalities.audio import AudioEmbeddingService
+from .modalities.video import VideoEmbeddingService
 
 
 class EmbeddingHandler:
     def __init__(self, modality, model):
         if modality == "text":
+            # sentence-transformers/all-MiniLM-L6-v2
             self.service = TextEmbeddingService(model)
         elif modality == "image":
+            # openai/clip-vit-base-patch32
             self.service = ImageEmbeddingService(model)
-       elif modality == "audio":
+        elif modality == "audio":
+            # facebook/wav2vec2-base-960h
             self.service = AudioEmbeddingService(model)
+        elif modality == "video":
+            # openai/clip-vit-base-patch32
+            self.service = VideoEmbeddingService(model)
         else:
             raise ValueError(f"Unknown modality: {modality}")
 
