@@ -81,7 +81,7 @@ class FileHandler:
 
         start_time = time.time() * 1000
         # Process file based on chunking preference and file type
-        if metadata["label"] in files["text"]:
+        if metadata["label"] == "pdf":
             text_output = await text_service.run(should_chunk)
         else:
             raise BadRequestError(error={"message": "File type not supported"})

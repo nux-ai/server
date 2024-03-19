@@ -1,6 +1,10 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10
 
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx
+
 # Install Poetry
 RUN pip install --no-cache-dir poetry
 

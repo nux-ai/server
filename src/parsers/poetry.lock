@@ -743,17 +743,6 @@ files = [
 dev = ["coverage", "coveralls", "pytest"]
 
 [[package]]
-name = "et-xmlfile"
-version = "1.1.0"
-description = "An implementation of lxml.xmlfile for the standard library"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "et_xmlfile-1.1.0-py3-none-any.whl", hash = "sha256:a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada"},
-    {file = "et_xmlfile-1.1.0.tar.gz", hash = "sha256:8eb9e2bc2f8c97e37a2dc85a09ecdcdec9d8a396530a6d5a33b30b9a92da0c5c"},
-]
-
-[[package]]
 name = "exceptiongroup"
 version = "1.2.0"
 description = "Backport of PEP 654 (exception groups)"
@@ -1195,25 +1184,6 @@ files = [
 ]
 
 [[package]]
-name = "importlib-metadata"
-version = "7.0.1"
-description = "Read metadata from Python packages"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "importlib_metadata-7.0.1-py3-none-any.whl", hash = "sha256:4805911c3a4ec7c3966410053e9ec6a1fecd629117df5adee56dfc9432a1081e"},
-    {file = "importlib_metadata-7.0.1.tar.gz", hash = "sha256:f238736bb06590ae52ac1fab06a3a9ef1d8dce2b7a35b5ab329371d6c8f5d2cc"},
-]
-
-[package.dependencies]
-zipp = ">=0.5"
-
-[package.extras]
-docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (<7.2.5)", "sphinx (>=3.5)", "sphinx-lint"]
-perf = ["ipython"]
-testing = ["flufl.flake8", "importlib-resources (>=1.3)", "packaging", "pyfakefs", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-perf (>=0.9.2)", "pytest-ruff"]
-
-[[package]]
 name = "importlib-resources"
 version = "6.1.1"
 description = "Read resources from Python packages"
@@ -1570,21 +1540,6 @@ tabulate = ">=0.9.0,<0.10.0"
 tqdm = ">=4.64.1,<5.0.0"
 
 [[package]]
-name = "markdown"
-version = "3.5.2"
-description = "Python implementation of John Gruber's Markdown."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "Markdown-3.5.2-py3-none-any.whl", hash = "sha256:d43323865d89fc0cb9b20c75fc8ad313af307cc087e84b657d9eec768eddeadd"},
-    {file = "Markdown-3.5.2.tar.gz", hash = "sha256:e1ac7b3dc550ee80e602e71c1d168002f062e49f1b11e26a36264dafd4df2ef8"},
-]
-
-[package.extras]
-docs = ["mdx-gh-links (>=0.2)", "mkdocs (>=1.5)", "mkdocs-gen-files", "mkdocs-literate-nav", "mkdocs-nature (>=0.6)", "mkdocs-section-index", "mkdocstrings[python]"]
-testing = ["coverage", "pyyaml"]
-
-[[package]]
 name = "markupsafe"
 version = "2.1.5"
 description = "Safely add untrusted strings to HTML/XML markup."
@@ -1750,23 +1705,6 @@ develop = ["codecov", "pycodestyle", "pytest (>=4.6)", "pytest-cov", "wheel"]
 docs = ["sphinx"]
 gmpy = ["gmpy2 (>=2.1.0a4)"]
 tests = ["pytest (>=4.6)"]
-
-[[package]]
-name = "msg-parser"
-version = "1.2.0"
-description = "This module enables reading, parsing and converting Microsoft Outlook MSG E-Mail files."
-optional = false
-python-versions = ">=3.4"
-files = [
-    {file = "msg_parser-1.2.0-py2.py3-none-any.whl", hash = "sha256:d47a2f0b2a359cb189fad83cc991b63ea781ecc70d91410324273fbf93e95375"},
-    {file = "msg_parser-1.2.0.tar.gz", hash = "sha256:0de858d4fcebb6c8f6f028da83a17a20fe01cdce67c490779cf43b3b0162aa66"},
-]
-
-[package.dependencies]
-olefile = ">=0.46"
-
-[package.extras]
-rtf = ["compressed-rtf (>=1.0.5)"]
 
 [[package]]
 name = "multidict"
@@ -2109,20 +2047,6 @@ files = [
 ]
 
 [[package]]
-name = "olefile"
-version = "0.47"
-description = "Python package to parse, read and write Microsoft OLE2 files (Structured Storage or Compound Document, Microsoft Office)"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-files = [
-    {file = "olefile-0.47-py2.py3-none-any.whl", hash = "sha256:543c7da2a7adadf21214938bb79c83ea12b473a4b6ee4ad4bf854e7715e13d1f"},
-    {file = "olefile-0.47.zip", hash = "sha256:599383381a0bf3dfbd932ca0ca6515acd174ed48870cbf7fee123d698c192c1c"},
-]
-
-[package.extras]
-tests = ["pytest", "pytest-cov"]
-
-[[package]]
 name = "omegaconf"
 version = "2.3.0"
 description = "A flexible configuration library"
@@ -2237,24 +2161,10 @@ files = [
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.23.5", markers = "python_version >= \"3.11\""},
     {version = ">=1.21.4", markers = "python_version >= \"3.10\" and platform_system == \"Darwin\" and python_version < \"3.11\""},
     {version = ">=1.21.2", markers = "platform_system != \"Darwin\" and python_version >= \"3.10\" and python_version < \"3.11\""},
+    {version = ">=1.23.5", markers = "python_version >= \"3.11\""},
 ]
-
-[[package]]
-name = "openpyxl"
-version = "3.1.2"
-description = "A Python library to read/write Excel 2010 xlsx/xlsm files"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "openpyxl-3.1.2-py2.py3-none-any.whl", hash = "sha256:f91456ead12ab3c6c2e9491cf33ba6d08357d802192379bb482f1033ade496f5"},
-    {file = "openpyxl-3.1.2.tar.gz", hash = "sha256:a6f5977418eff3b2d5500d54d9db50c8277a368436f4e4f8ddb1be3422870184"},
-]
-
-[package.dependencies]
-et-xmlfile = "*"
 
 [[package]]
 name = "packaging"
@@ -2307,8 +2217,8 @@ files = [
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.23.2,<2", markers = "python_version == \"3.11\""},
     {version = ">=1.22.4,<2", markers = "python_version < \"3.11\""},
+    {version = ">=1.23.2,<2", markers = "python_version == \"3.11\""},
 ]
 python-dateutil = ">=2.8.2"
 pytz = ">=2020.1"
@@ -2828,17 +2738,6 @@ typing-extensions = "*"
 dev = ["black", "flake8", "flake8-black", "isort", "jupyter-console", "mkdocs", "mkdocs-include-markdown-plugin", "mkdocstrings[python]", "pytest", "pytest-asyncio", "pytest-trio", "toml", "tox", "trio", "trio", "trio-typing", "twine", "twisted", "validate-pyproject[all]"]
 
 [[package]]
-name = "pypandoc"
-version = "1.12"
-description = "Thin wrapper for pandoc."
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "pypandoc-1.12-py3-none-any.whl", hash = "sha256:efb4f7d68ead8bec32e22b62f02d5608a1700978b51bfc4af286fd6acfe9d218"},
-    {file = "pypandoc-1.12.tar.gz", hash = "sha256:8f44740a9f074e121d81b489f073160421611d4ead62d1b306aeb11aab3c32df"},
-]
-
-[[package]]
 name = "pyparsing"
 version = "3.0.9"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
@@ -2933,21 +2832,6 @@ files = [
 six = ">=1.5"
 
 [[package]]
-name = "python-docx"
-version = "1.1.0"
-description = "Create, read, and update Microsoft Word .docx files."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "python-docx-1.1.0.tar.gz", hash = "sha256:5829b722141cf1ab79aedf0c34d9fe9924b29764584c0f2164eb2b02dcdf17c9"},
-    {file = "python_docx-1.1.0-py3-none-any.whl", hash = "sha256:bac9773278098a1ddc43a52d84e22f5909c4a3080a624530b3ecb3771b07c6cd"},
-]
-
-[package.dependencies]
-lxml = ">=3.1.0"
-typing-extensions = "*"
-
-[[package]]
 name = "python-dotenv"
 version = "1.0.1"
 description = "Read key-value pairs from a .env file and set them as environment variables"
@@ -2999,22 +2883,6 @@ files = [
 
 [package.extras]
 dev = ["atomicwrites (==1.4.1)", "attrs (==23.2.0)", "coverage (==7.4.1)", "hatch", "invoke (==2.2.0)", "more-itertools (==10.2.0)", "pbr (==6.0.0)", "pluggy (==1.4.0)", "py (==1.11.0)", "pytest (==8.0.0)", "pytest-cov (==4.1.0)", "pytest-timeout (==2.2.0)", "pyyaml (==6.0.1)", "ruff (==0.2.1)"]
-
-[[package]]
-name = "python-pptx"
-version = "0.6.23"
-description = "Generate and manipulate Open XML PowerPoint (.pptx) files"
-optional = false
-python-versions = "*"
-files = [
-    {file = "python-pptx-0.6.23.tar.gz", hash = "sha256:587497ff28e779ab18dbb074f6d4052893c85dedc95ed75df319364f331fedee"},
-    {file = "python_pptx-0.6.23-py3-none-any.whl", hash = "sha256:dd0527194627a2b7cc05f3ba23ecaa2d9a0d5ac9b6193a28ed1b7a716f4217d4"},
-]
-
-[package.dependencies]
-lxml = ">=3.1.0"
-Pillow = ">=3.3.2"
-XlsxWriter = ">=0.5.7"
 
 [[package]]
 name = "pytz"
@@ -3981,109 +3849,98 @@ files = [
 ]
 
 [package.dependencies]
-antlr4-python3-runtime = {version = "4.9.3", optional = true, markers = "extra == \"all-docs\""}
+antlr4-python3-runtime = {version = "4.9.3", optional = true, markers = "extra == \"pdf\""}
 backoff = "2.2.1"
 beautifulsoup4 = "4.12.3"
 certifi = "2024.2.2"
-cffi = {version = "1.16.0", optional = true, markers = "extra == \"all-docs\""}
+cffi = {version = "1.16.0", optional = true, markers = "extra == \"pdf\""}
 chardet = "5.2.0"
 charset-normalizer = "3.3.2"
 click = "8.1.7"
-coloredlogs = {version = "15.0.1", optional = true, markers = "extra == \"all-docs\""}
-contourpy = {version = "1.2.0", optional = true, markers = "extra == \"all-docs\""}
-cryptography = {version = "42.0.2", optional = true, markers = "extra == \"all-docs\""}
-cycler = {version = "0.12.1", optional = true, markers = "extra == \"all-docs\""}
+coloredlogs = {version = "15.0.1", optional = true, markers = "extra == \"pdf\""}
+contourpy = {version = "1.2.0", optional = true, markers = "extra == \"pdf\""}
+cryptography = {version = "42.0.2", optional = true, markers = "extra == \"pdf\""}
+cycler = {version = "0.12.1", optional = true, markers = "extra == \"pdf\""}
 dataclasses-json = "0.6.4"
 dataclasses-json-speakeasy = "0.5.11"
-deprecated = {version = "1.2.14", optional = true, markers = "extra == \"all-docs\""}
-effdet = {version = "0.4.1", optional = true, markers = "extra == \"all-docs\""}
+deprecated = {version = "1.2.14", optional = true, markers = "extra == \"pdf\""}
+effdet = {version = "0.4.1", optional = true, markers = "extra == \"pdf\""}
 emoji = "2.10.1"
-et-xmlfile = {version = "1.1.0", optional = true, markers = "extra == \"all-docs\""}
-filelock = {version = "3.13.1", optional = true, markers = "extra == \"all-docs\""}
+filelock = {version = "3.13.1", optional = true, markers = "extra == \"pdf\""}
 filetype = "1.2.0"
-flatbuffers = {version = "23.5.26", optional = true, markers = "extra == \"all-docs\""}
-fonttools = {version = "4.49.0", optional = true, markers = "extra == \"all-docs\""}
-fsspec = {version = "2024.2.0", optional = true, markers = "extra == \"all-docs\""}
-huggingface-hub = {version = "0.20.3", optional = true, markers = "extra == \"all-docs\""}
-humanfriendly = {version = "10.0", optional = true, markers = "extra == \"all-docs\""}
+flatbuffers = {version = "23.5.26", optional = true, markers = "extra == \"pdf\""}
+fonttools = {version = "4.49.0", optional = true, markers = "extra == \"pdf\""}
+fsspec = {version = "2024.2.0", optional = true, markers = "extra == \"pdf\""}
+huggingface-hub = {version = "0.20.3", optional = true, markers = "extra == \"pdf\""}
+humanfriendly = {version = "10.0", optional = true, markers = "extra == \"pdf\""}
 idna = "3.6"
-importlib-metadata = {version = "7.0.1", optional = true, markers = "extra == \"all-docs\""}
-importlib-resources = {version = "6.1.1", optional = true, markers = "extra == \"all-docs\""}
-iopath = {version = "0.1.10", optional = true, markers = "extra == \"all-docs\""}
-jinja2 = {version = "3.1.3", optional = true, markers = "extra == \"all-docs\""}
+importlib-resources = {version = "6.1.1", optional = true, markers = "extra == \"pdf\""}
+iopath = {version = "0.1.10", optional = true, markers = "extra == \"pdf\""}
+jinja2 = {version = "3.1.3", optional = true, markers = "extra == \"pdf\""}
 joblib = "1.3.2"
 jsonpath-python = "1.0.6"
-kiwisolver = {version = "1.4.5", optional = true, markers = "extra == \"all-docs\""}
+kiwisolver = {version = "1.4.5", optional = true, markers = "extra == \"pdf\""}
 langdetect = "1.0.9"
-layoutparser = {version = "0.3.4", extras = ["layoutmodels", "tesseract"], optional = true, markers = "extra == \"all-docs\""}
+layoutparser = {version = "0.3.4", extras = ["layoutmodels", "tesseract"], optional = true, markers = "extra == \"pdf\""}
 lxml = "5.1.0"
-markdown = {version = "3.5.2", optional = true, markers = "extra == \"all-docs\""}
-markupsafe = {version = "2.1.5", optional = true, markers = "extra == \"all-docs\""}
+markupsafe = {version = "2.1.5", optional = true, markers = "extra == \"pdf\""}
 marshmallow = "3.20.2"
-matplotlib = {version = "3.7.2", optional = true, markers = "extra == \"all-docs\""}
-mpmath = {version = "1.3.0", optional = true, markers = "extra == \"all-docs\""}
-msg-parser = {version = "1.2.0", optional = true, markers = "extra == \"all-docs\""}
+matplotlib = {version = "3.7.2", optional = true, markers = "extra == \"pdf\""}
+mpmath = {version = "1.3.0", optional = true, markers = "extra == \"pdf\""}
 mypy-extensions = "1.0.0"
-networkx = {version = "3.2.1", optional = true, markers = "extra == \"all-docs\""}
+networkx = {version = "3.2.1", optional = true, markers = "extra == \"pdf\""}
 nltk = "3.8.1"
 numpy = "1.26.4"
-olefile = {version = "0.47", optional = true, markers = "extra == \"all-docs\""}
-omegaconf = {version = "2.3.0", optional = true, markers = "extra == \"all-docs\""}
-onnx = {version = "1.15.0", optional = true, markers = "extra == \"all-docs\""}
-onnxruntime = {version = "1.15.1", optional = true, markers = "extra == \"all-docs\""}
-opencv-python = {version = "4.8.0.76", optional = true, markers = "extra == \"all-docs\""}
-openpyxl = {version = "3.1.2", optional = true, markers = "extra == \"all-docs\""}
+omegaconf = {version = "2.3.0", optional = true, markers = "extra == \"pdf\""}
+onnx = {version = "1.15.0", optional = true, markers = "extra == \"pdf\""}
+onnxruntime = {version = "1.15.1", optional = true, markers = "extra == \"pdf\""}
+opencv-python = {version = "4.8.0.76", optional = true, markers = "extra == \"pdf\""}
 packaging = "23.2"
-pandas = {version = "2.2.0", optional = true, markers = "extra == \"all-docs\""}
-pdf2image = {version = "1.17.0", optional = true, markers = "extra == \"all-docs\""}
-pdfminer-six = {version = "20221105", optional = true, markers = "extra == \"all-docs\""}
-pdfplumber = {version = "0.10.4", optional = true, markers = "extra == \"all-docs\""}
-pikepdf = {version = "8.11.0", optional = true, markers = "extra == \"all-docs\""}
-pillow = {version = "10.2.0", optional = true, markers = "extra == \"all-docs\""}
-pillow-heif = {version = "0.15.0", optional = true, markers = "extra == \"all-docs\""}
-portalocker = {version = "2.8.2", optional = true, markers = "extra == \"all-docs\""}
-protobuf = {version = "4.23.4", optional = true, markers = "extra == \"all-docs\""}
-pycocotools = {version = "2.0.7", optional = true, markers = "extra == \"all-docs\""}
-pycparser = {version = "2.21", optional = true, markers = "extra == \"all-docs\""}
-pypandoc = {version = "1.12", optional = true, markers = "extra == \"all-docs\""}
-pyparsing = {version = "3.0.9", optional = true, markers = "extra == \"all-docs\""}
-pypdf = {version = "4.0.1", optional = true, markers = "extra == \"all-docs\""}
-pypdfium2 = {version = "4.27.0", optional = true, markers = "extra == \"all-docs\""}
-pytesseract = {version = "0.3.10", optional = true, markers = "extra == \"all-docs\""}
+pandas = {version = "2.2.0", optional = true, markers = "extra == \"pdf\""}
+pdf2image = {version = "1.17.0", optional = true, markers = "extra == \"pdf\""}
+pdfminer-six = {version = "20221105", optional = true, markers = "extra == \"pdf\""}
+pdfplumber = {version = "0.10.4", optional = true, markers = "extra == \"pdf\""}
+pikepdf = {version = "8.11.0", optional = true, markers = "extra == \"pdf\""}
+pillow = {version = "10.2.0", optional = true, markers = "extra == \"pdf\""}
+pillow-heif = {version = "0.15.0", optional = true, markers = "extra == \"pdf\""}
+portalocker = {version = "2.8.2", optional = true, markers = "extra == \"pdf\""}
+protobuf = {version = "4.23.4", optional = true, markers = "extra == \"pdf\""}
+pycocotools = {version = "2.0.7", optional = true, markers = "extra == \"pdf\""}
+pycparser = {version = "2.21", optional = true, markers = "extra == \"pdf\""}
+pyparsing = {version = "3.0.9", optional = true, markers = "extra == \"pdf\""}
+pypdf = {version = "4.0.1", optional = true, markers = "extra == \"pdf\""}
+pypdfium2 = {version = "4.27.0", optional = true, markers = "extra == \"pdf\""}
+pytesseract = {version = "0.3.10", optional = true, markers = "extra == \"pdf\""}
 python-dateutil = "2.8.2"
-python-docx = {version = "1.1.0", optional = true, markers = "extra == \"all-docs\""}
 python-iso639 = "2024.2.7"
 python-magic = "0.4.27"
-python-multipart = {version = "0.0.9", optional = true, markers = "extra == \"all-docs\""}
-python-pptx = {version = "0.6.23", optional = true, markers = "extra == \"all-docs\""}
-pytz = {version = "2024.1", optional = true, markers = "extra == \"all-docs\""}
-pyyaml = {version = "6.0.1", optional = true, markers = "extra == \"all-docs\""}
+python-multipart = {version = "0.0.9", optional = true, markers = "extra == \"pdf\""}
+pytz = {version = "2024.1", optional = true, markers = "extra == \"pdf\""}
+pyyaml = {version = "6.0.1", optional = true, markers = "extra == \"pdf\""}
 rapidfuzz = "3.6.1"
 regex = "2023.12.25"
 requests = "2.31.0"
-safetensors = {version = "0.3.2", optional = true, markers = "extra == \"all-docs\""}
-scipy = {version = "1.10.1", optional = true, markers = "extra == \"all-docs\""}
+safetensors = {version = "0.3.2", optional = true, markers = "extra == \"pdf\""}
+scipy = {version = "1.10.1", optional = true, markers = "extra == \"pdf\""}
 six = "1.16.0"
 soupsieve = "2.5"
-sympy = {version = "1.12", optional = true, markers = "extra == \"all-docs\""}
+sympy = {version = "1.12", optional = true, markers = "extra == \"pdf\""}
 tabulate = "0.9.0"
-timm = {version = "0.9.12", optional = true, markers = "extra == \"all-docs\""}
-tokenizers = {version = "0.15.2", optional = true, markers = "extra == \"all-docs\""}
-torch = {version = "2.2.0", optional = true, markers = "extra == \"all-docs\""}
-torchvision = {version = "0.17.0", optional = true, markers = "extra == \"all-docs\""}
+timm = {version = "0.9.12", optional = true, markers = "extra == \"pdf\""}
+tokenizers = {version = "0.15.2", optional = true, markers = "extra == \"pdf\""}
+torch = {version = "2.2.0", optional = true, markers = "extra == \"pdf\""}
+torchvision = {version = "0.17.0", optional = true, markers = "extra == \"pdf\""}
 tqdm = "4.66.2"
-transformers = {version = "4.37.1", optional = true, markers = "extra == \"all-docs\""}
+transformers = {version = "4.37.1", optional = true, markers = "extra == \"pdf\""}
 typing-extensions = "4.9.0"
 typing-inspect = "0.9.0"
-tzdata = {version = "2024.1", optional = true, markers = "extra == \"all-docs\""}
+tzdata = {version = "2024.1", optional = true, markers = "extra == \"pdf\""}
 unstructured-client = "0.18.0"
-unstructured-inference = {version = "0.7.23", optional = true, markers = "extra == \"all-docs\""}
-unstructured-pytesseract = {version = "0.3.12", optional = true, markers = "extra == \"all-docs\""}
+unstructured-inference = {version = "0.7.23", optional = true, markers = "extra == \"pdf\""}
+unstructured-pytesseract = {version = "0.3.12", optional = true, markers = "extra == \"pdf\""}
 urllib3 = "1.26.18"
 wrapt = "1.16.0"
-xlrd = {version = "2.0.1", optional = true, markers = "extra == \"all-docs\""}
-xlsxwriter = {version = "3.1.9", optional = true, markers = "extra == \"all-docs\""}
-zipp = {version = "3.17.0", optional = true, markers = "extra == \"all-docs\""}
+zipp = {version = "3.17.0", optional = true, markers = "extra == \"pdf\""}
 
 [package.extras]
 airtable = ["certifi (==2024.2.2)", "charset-normalizer (==3.3.2)", "idna (==3.6)", "inflection (==0.5.1)", "pyairtable (==2.2.2)", "pydantic (==1.10.14)", "requests (==2.31.0)", "typing-extensions (==4.9.0)", "urllib3 (==1.26.18)"]
@@ -4229,13 +4086,13 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "uvicorn"
-version = "0.28.0"
+version = "0.28.1"
 description = "The lightning-fast ASGI server."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "uvicorn-0.28.0-py3-none-any.whl", hash = "sha256:6623abbbe6176204a4226e67607b4d52cc60ff62cda0ff177613645cefa2ece1"},
-    {file = "uvicorn-0.28.0.tar.gz", hash = "sha256:cab4473b5d1eaeb5a0f6375ac4bc85007ffc75c3cc1768816d9e5d589857b067"},
+    {file = "uvicorn-0.28.1-py3-none-any.whl", hash = "sha256:5162f6d652f545be91b1feeaee8180774af143965ca9dc8a47ff1dc6bafa4ad5"},
+    {file = "uvicorn-0.28.1.tar.gz", hash = "sha256:08103e79d546b6cf20f67c7e5e434d2cf500a6e29b28773e407250c54fc4fa3c"},
 ]
 
 [package.dependencies]
@@ -4323,33 +4180,6 @@ files = [
     {file = "wrapt-1.16.0-cp39-cp39-win_amd64.whl", hash = "sha256:eb1b046be06b0fce7249f1d025cd359b4b80fc1c3e24ad9eca33e0dcdb2e4a35"},
     {file = "wrapt-1.16.0-py3-none-any.whl", hash = "sha256:6906c4100a8fcbf2fa735f6059214bb13b97f75b1a61777fcf6432121ef12ef1"},
     {file = "wrapt-1.16.0.tar.gz", hash = "sha256:5f370f952971e7d17c7d1ead40e49f32345a7f7a5373571ef44d800d06b1899d"},
-]
-
-[[package]]
-name = "xlrd"
-version = "2.0.1"
-description = "Library for developers to extract data from Microsoft Excel (tm) .xls spreadsheet files"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
-files = [
-    {file = "xlrd-2.0.1-py2.py3-none-any.whl", hash = "sha256:6a33ee89877bd9abc1158129f6e94be74e2679636b8a205b43b85206c3f0bbdd"},
-    {file = "xlrd-2.0.1.tar.gz", hash = "sha256:f72f148f54442c6b056bf931dbc34f986fd0c3b0b6b5a58d013c9aef274d0c88"},
-]
-
-[package.extras]
-build = ["twine", "wheel"]
-docs = ["sphinx"]
-test = ["pytest", "pytest-cov"]
-
-[[package]]
-name = "xlsxwriter"
-version = "3.1.9"
-description = "A Python module for creating Excel XLSX files."
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "XlsxWriter-3.1.9-py3-none-any.whl", hash = "sha256:b61c1a0c786f82644936c0936ec96ee96cd3afb9440094232f7faef9b38689f0"},
-    {file = "XlsxWriter-3.1.9.tar.gz", hash = "sha256:de810bf328c6a4550f4ffd6b0b34972aeb7ffcf40f3d285a0413734f9b63a929"},
 ]
 
 [[package]]
@@ -4473,4 +4303,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "9e293f143ff7cd71f0d0bc213f15b07896a764e68c7e2e7b672a30519629b250"
+content-hash = "7575f443f87cc14157136a82b2df09b14e9b70fa4618fb0440e7b6a65bc19977"

@@ -14,7 +14,7 @@ playwright = "^1.42.0"
 beautifulsoup4 = "^4.12.3"
 aioboto3 = "^12.3.0"
 python-multipart = "^0.0.9"
-unstructured = {extras = ["all-docs"], version = "^0.12.6"}
+unstructured = {extras = ["pdf"], version = "^0.12.6"}
 fastapi = "^0.110.0"
 magika = "<0.5.1"
 
