@@ -23,7 +23,7 @@ class ParseHandler:
         self.index_id = index_id
         self.url = f"{parser_url}/file"
 
-    async def send_to_parser(self, payload):
+    async def send_to_parser(self, payload, should_chunk):
         # if await get_file_size(payload["file_url"]) > file_size_limit:
         #     raise BadRequestError({"error": "File too large"})
 
@@ -31,7 +31,7 @@ class ParseHandler:
 
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                self.url,
+                self.url + "?should_chunk=" + str(should_chunk),
                 json=payload,
             )
             return response.json()
