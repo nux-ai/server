@@ -27,31 +27,7 @@ jobs:
     - name: Build and push API Docker Image
       uses: docker/build-push-action@v2
       with:
-        context: src/api
-        file: ./src/api/Dockerfile
+        context: src/mixpeek
+        file: ./src/mixpeek/Dockerfile
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/nux-server-api:latest
-
-    - name: Build and push Inference Docker Image
-      uses: docker/build-push-action@v2
-      with:
-        context: src/inference
-        file: ./src/inference/Dockerfile
-        push: true
-        tags: ghcr.io/${{ github.repository_owner }}/nux-server-inference:latest
-
-    - name: Build and push Parse Docker Image
-      uses: docker/build-push-action@v2
-      with:
-        context: src/parse
-        file: ./src/parse/Dockerfile
-        push: true
-        tags: ghcr.io/${{ github.repository_owner }}/nux-server-parse:latest
-
-    - name: Build and push Listener Docker Image
-      uses: docker/build-push-action@v2
-      with:
-        context: src/parse
-        file: ./src/listen/Dockerfile
-        push: true
-        tags: ghcr.io/${{ github.repository_owner }}/nux-server-listener:latest
+        tags: ghcr.io/${{ github.repository_owner }}/mixpeek-api:latest
