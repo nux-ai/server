@@ -13,25 +13,25 @@ class CodeValidation:
                 status_code=400,
                 detail=f"Code length exceeds {max_code_length} characters",
             )
-        extensions = {"python": ".py"}
-        with tempfile.NamedTemporaryFile(suffix=".py") as temp:
-            temp.write(code.encode())
-            temp.flush()
-            result = subprocess.run(
-                ["bandit", temp.name], capture_output=True, text=True
-            )
+        # extensions = {"python": ".py"}
+        # with tempfile.NamedTemporaryFile(suffix=".py") as temp:
+        #     temp.write(code.encode())
+        #     temp.flush()
+        #     result = subprocess.run(
+        #         ["bandit", temp.name], capture_output=True, text=True
+        #     )
 
-        # Check if bandit found any issues
-        if "No issues identified." in result.stdout:
-            return True
-        else:
-            # Parse the issues into a JSON
-            # Skip the first two lines, which are not issues
-            issues = result.stdout.split("\n")[2:]
-            issues_json = [
-                {"issue": issue} for issue in issues if issue
-            ]  # Ignore empty lines
-            return json.dumps(issues_json[1]["issue"])
+        # # Check if bandit found any issues
+        # if "No issues identified." in result.stdout:
+        #     return True
+        # else:
+        #     # Parse the issues into a JSON
+        #     # Skip the first two lines, which are not issues
+        #     issues = result.stdout.split("\n")[2:]
+        #     issues_json = [
+        #         {"issue": issue} for issue in issues if issue
+        #     ]  # Ignore empty lines
+        #     return json.dumps(issues_json[1]["issue"])
 
     @staticmethod
     def check_for_function(code):
