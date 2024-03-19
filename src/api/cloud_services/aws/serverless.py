@@ -64,7 +64,7 @@ class LambdaClass:
                 Tags=tags,
                 Layers=self.layer_arns,
             )
-            return "response"
+            return response
 
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))

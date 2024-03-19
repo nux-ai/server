@@ -6,6 +6,8 @@ from db_internal.service import BaseSyncDBService
 from .model import WorkflowCreateRequest
 from .utilities import CodeHandler
 
+from _exceptions import InternalServerError
+
 
 from utilities.helpers import generate_function_name, current_time
 
@@ -38,12 +40,14 @@ class WorkflowSyncService(BaseSyncDBService):
         code_handler._validate_code()
 
         # upload to s3
-        s3_dict = code_handler._create_zip_package(
+        response = code_handler._create_zip_package(
             new_workflow.settings.requirements,
             new_workflow.settings.python_version,
-        )["data"]
+        )
+        if response["status"] == "error":
+            raise InternalServerError(response["error"])
 
-        # print(s3_dict)
+        s3_dict = response["response"]
 
         # create lambda function
         code_handler.create_lambda_function(s3_dict["bucket"], s3_dict["key"])

@@ -33,7 +33,7 @@ class PackageZipper:
         self.data = data
 
     def call_endpoint(self):
-        response = requests.post(f"{parser_url}/process/package", json=self.data)
+        response = requests.post(f"{parser_url}/package", json=self.data)
         return response.json()
 
     def load_zip_in_memory(self, s3_path):
