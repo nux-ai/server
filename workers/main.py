@@ -4,9 +4,6 @@ from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 import uvicorn
 
-from files.model import FileData
-from files.service import FileHandler
-
 from website.service import WebScraper
 from website.model import WebsiteData
 
@@ -18,8 +15,6 @@ from _exceptions import APIError
 
 app = FastAPI()
 
-# router = FastAPI(prefix="/process")
-
 
 class ResponseData(BaseModel):
     text: Optional[str] = Field(None, description="Extracted text from the file")
@@ -30,15 +25,6 @@ class ApiResponse(BaseModel):
     status: str = Field(..., description="Status of the request")
     message: str = Field(..., description="Detailed message")
     data: Optional[ResponseData] = Field(None, description="Data of the response")
-
-
-@app.post("/file")
-async def process_file(
-    file: FileData,
-    should_chunk: Optional[bool] = True,
-):
-    file_handler = FileHandler(file.file_url)
-    return await file_handler.parse_file(should_chunk)
 
 
 @app.post("/website")

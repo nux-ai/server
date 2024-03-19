@@ -42,8 +42,15 @@ Docs are at `/docs`,
 `ngrok http http://localhost:8000`
 
 
-### Alternatively, you can build with Docker
+## Docker Commands:
 
-`docker build --platform linux/amd64 -t nux-ai/api:v1 .`
+docker build --platform linux/amd64 -t nux/nux-server-api:latest .
 
-`docker run -p 8000:8000 nux-ai/api:v1`
+docker run -p 8002:8002 nux/nux-server-api:latest
+
+
+## push to gh
+
+docker tag nux/nux-server-api:latest ghcr.io/nux-ai/nux-server-api:latest
+
+docker push ghcr.io/nux-ai/nux-server-api:latest

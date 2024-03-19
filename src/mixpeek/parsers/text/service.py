@@ -37,11 +37,9 @@ class TextService:
 
             # Process chunks based on should_chunk flag
             processed_chunks = self.process_chunks(chunks, should_chunk)
-
             return processed_chunks
         except Exception as e:
-            error = {"message": str(e)}
-            raise InternalServerError(error)
+            raise InternalServerError({"message": str(e)})
 
     def process_chunks(self, chunks, should_chunk):
         if should_chunk:

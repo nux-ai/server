@@ -14,14 +14,8 @@ async def parse_file(
     parser_request: ParseFileRequest,
     should_chunk: Optional[bool] = True,
 ):
-    parse_handler = ParseHandler(request.index_id)
-    payload = {
-        "file_url": parser_request.file_url,
-        # "contents": getattr(request_body.contents, "contents", None),
-        "index_id": request.index_id,
-    }
+    parse_handler = ParseHandler(parser_request.file_url)
     try:
-        response = await parse_handler.send_to_parser(payload, should_chunk)
-        return response
+        return await parse_handler.parse(should_chunk)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
