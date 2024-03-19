@@ -4,7 +4,6 @@ from unstructured.partition.pdf import partition_pdf
 from unstructured.cleaners.core import clean
 from unstructured.chunking.basic import chunk_elements
 
-from _utils import create_json_response
 from _exceptions import InternalServerError
 
 
@@ -25,7 +24,7 @@ class TextService:
             overlap=overlap_subset,
         )
 
-    async def run_pdf(self):
+    async def run(self, should_chunk=True):
         try:
             elements = partition_pdf(
                 file=self.file_stream,
@@ -35,12 +34,22 @@ class TextService:
                 # hi_res_model_name="detectron2_onnx",
             )
             chunks = self._chunk(elements)
-            for c in chunks:
-                response_obj = c.to_dict()
-                response_obj["text"] = self._clean(response_obj["text"])
-                self.chunks.append(response_obj)
 
-            return create_json_response(True, 200, None, self.chunks)
+            # Process chunks based on should_chunk flag
+            processed_chunks = self.process_chunks(chunks, should_chunk)
+
+            return processed_chunks
         except Exception as e:
             error = {"message": str(e)}
             raise InternalServerError(error)
+
+    def process_chunks(self, chunks, should_chunk):
+        if should_chunk:
+            return [self.process_chunk(c) for c in chunks]
+        else:
+            return "".join(self._clean(c.to_dict()["text"]) for c in chunks)
+
+    def process_chunk(self, chunk):
+        response_obj = chunk.to_dict()
+        response_obj["text"] = self._clean(response_obj["text"])
+        return response_obj

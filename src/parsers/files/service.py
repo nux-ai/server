@@ -8,7 +8,7 @@ from .utils import generate_filename_from_url, get_filename_from_cd
 from .text.service import TextService
 
 from _exceptions import InternalServerError, NotFoundError, BadRequestError
-from _utils import create_json_response
+from _utils import create_success_response
 
 files = {
     "text": ["pdf", "docx", "txt", "md", "html", "xml"],
@@ -43,7 +43,9 @@ class FileHandler:
                     )
 
         except Exception as e:
-            raise InternalServerError(error={"message": f"Error downloading file: {e}"})
+            raise BadRequestError(
+                error={"message": f"Error downloading file: {response.status_code}"}
+            )
 
     def detect_filetype(self, contents):
         try:
@@ -57,29 +59,34 @@ class FileHandler:
             # }
             data = {
                 "label": res.output.ct_label,
-                "description": res.output.description,
                 "mime_type": res.output.mime_type,
                 "group": res.output.group,
             }
             return data
         except Exception as e:
-            raise InternalServerError(
+            raise BadRequestError(
                 error={"message": "Error occurred while detecting filetype"}
             )
 
-    async def parse_file(self):
+    async def parse_file(self, should_chunk=True):
         # Download file into memory
         contents, filename = await self.download_into_memory()
         stream = BytesIO(contents)
 
         # Detect file type
         metadata = self.detect_filetype(stream.getvalue())
-        metadata["filename"] = filename
-        metadata["start_time"] = time.time() * 1000
+        metadata.update({"filename": filename})
 
         text_service = TextService(stream, metadata)
 
-        if metadata["label"] == "pdf":
-            return await text_service.run_pdf()
+        start_time = time.time() * 1000
+        # Process file based on chunking preference and file type
+        if metadata["label"] in files["text"]:
+            text_output = await text_service.run(should_chunk)
         else:
             raise BadRequestError(error={"message": "File type not supported"})
+
+        # Calculate elapsed time
+        metadata["elapsed_taken"] = (time.time() * 1000) - start_time
+
+        return create_success_response({"text": text_output, "metadata": metadata})

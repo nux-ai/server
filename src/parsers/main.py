@@ -13,6 +13,8 @@ from website.model import WebsiteData
 from package.model import PackageData
 from package.service import PackageManager
 
+from _exceptions import APIError
+
 
 app = FastAPI()
 
@@ -31,9 +33,12 @@ class ApiResponse(BaseModel):
 
 
 @app.post("/file")
-async def process_file(file: FileData):
+async def process_file(
+    file: FileData,
+    should_chunk: Optional[bool] = True,
+):
     file_handler = FileHandler(file.file_url)
-    return await file_handler.parse_file()
+    return await file_handler.parse_file(should_chunk)
 
 
 @app.post("/website")
