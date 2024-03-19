@@ -18,9 +18,8 @@ services:
       context: ./src/listeners
       dockerfile: Dockerfile
     image: ghcr.io/nux-ai/nux-server-listeners:latest
-
-  parsers:
-    build:
-      context: ./src/parsers
-      dockerfile: Dockerfile
-    image: ghcr.io/nux-ai/nux-server-parsers:latest
+  # parsers:
+  #   build:
+  #     context: ./src/parsers
+  #     dockerfile: Dockerfile
+  #   image: ghcr.io/nux-ai/nux-server-parsers:latest
