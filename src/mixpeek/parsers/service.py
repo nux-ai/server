@@ -18,7 +18,7 @@ files = {
 }
 
 
-class FileHandler:
+class ParseHandler:
     def __init__(self, file_url):
         self.file_url = file_url
 
@@ -68,7 +68,7 @@ class FileHandler:
                 error={"message": "Error occurred while detecting filetype"}
             )
 
-    async def parse_file(self, should_chunk=True):
+    async def parse(self, should_chunk=True):
         # Download file into memory
         contents, filename = await self.download_into_memory()
         stream = BytesIO(contents)

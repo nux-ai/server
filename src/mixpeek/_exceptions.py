@@ -1,8 +1,7 @@
 from typing import Optional
-import traceback
 
 
-class NuxException(Exception):
+class APIError(Exception):
     def __init__(
         self,
         success: bool,
@@ -17,9 +16,8 @@ class NuxException(Exception):
         super().__init__(self.error)
 
 
-class InternalServerError(NuxException):
+class InternalServerError(APIError):
     def __init__(self, error: Optional[dict] = None, response: Optional[dict] = None):
-        traceback.print_exc()
         super().__init__(
             success=False,
             status=500,
@@ -28,7 +26,7 @@ class InternalServerError(NuxException):
         )
 
 
-class NotFoundError(NuxException):
+class NotFoundError(APIError):
     def __init__(self, error: Optional[dict] = None, response: Optional[dict] = None):
         super().__init__(
             success=False,
@@ -38,7 +36,7 @@ class NotFoundError(NuxException):
         )
 
 
-class BadRequestError(NuxException):
+class BadRequestError(APIError):
     def __init__(self, error: Optional[dict] = None, response: Optional[dict] = None):
         super().__init__(
             success=False,
@@ -46,3 +44,27 @@ class BadRequestError(NuxException):
             error=error or {"message": "Bad Request"},
             response=response,
         )
+
+
+class UnsupportedModelProviderError(Exception):
+    """Exception raised for unsupported model provider."""
+
+    pass
+
+
+class UnsupportedModelVersionError(Exception):
+    """Exception raised for unsupported model version."""
+
+    pass
+
+
+class JSONSchemaParsingError(Exception):
+    """Exception raised for errors during JSON schema parsing."""
+
+    pass
+
+
+class ModelExecutionError(Exception):
+    """Exception raised for errors during model execution."""
+
+    pass
